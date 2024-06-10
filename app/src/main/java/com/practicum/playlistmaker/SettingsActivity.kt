@@ -18,8 +18,6 @@ class SettingsActivity : AppCompatActivity() {
         buttonBack.setOnClickListener {
             val backIntent = Intent(this, MainActivity::class.java)
             startActivity(backIntent)
-
-            //Toast.makeText(this, "Нажали на кнопку \"Назад\"!", Toast.LENGTH_SHORT).show()
         }
     }
 }

@@ -11,7 +11,7 @@
         android:layout_height="match_parent"
         android:background="@color/blue"
         android:orientation="vertical"
-        android:padding="16dp">
+        android:padding="@dimen/main_screen_padding">
 
         <TextView
             android:layout_width="wrap_content"
