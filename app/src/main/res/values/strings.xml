@@ -3,9 +3,23 @@
     <string name="search_button_text">Поиск</string>
     <string name="media_button_text">Медиатека</string>
     <string name="settings_button_text">Настройки</string>
+
     <string name="settings_screen_title">Настройки</string>
     <string name="settings_theme_title">Темная тема</string>
     <string name="settings_share_title">Поделиться приложением</string>
+
+    <string name="settings_share_url">https://practicum.yandex.ru/catalog/programming/?from=main_programming_card</string>
+
     <string name="settings_support_title">Написать в поддержку</string>
+
+    <string name="settings_support_address">b.frost@yandex.ru</string>
+    <string name="settings_support_subject">Сообщение разработчикам и разработчицам приложения Playlist Maker</string>
+    <string name="settings_support_message">Спасибо разработчикам и разработчицам за крутое приложение!</string>
+
     <string name="settings_user_title">Пользовательское соглашение</string>
+
+    <string name="settings_user_url">https://yandex.ru/legal/practicum_offer/</string>
+
+    <string name="search_screen_title">Поиск</string>
+    <string name="search_screen_edittext_hint">Поиск</string>
 </resources>
