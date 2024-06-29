@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="main_screen_padding">16dp</dimen>
+    <dimen name="main_screen_text_size">22sp</dimen>
+    <dimen name="main_screen_buttons_margin">16dp</dimen>
+    <dimen name="main_screen_buttons_radius">16dp</dimen>
+
+    <dimen name="settings_bars_height">61dp</dimen>
+    <dimen name="settings_titles_height">16sp</dimen>
+    <dimen name="settings_bars_margin">0dp</dimen>
+    <dimen name="settings_bars_padding_left">16dp</dimen>
+    <dimen name="settings_bars_padding_right">12dp</dimen>
+    <dimen name="settings_switch_width">56dp</dimen>
+    <dimen name="settings_switch_height">48dp</dimen>
+</resources>
