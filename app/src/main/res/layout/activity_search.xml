@@ -92,9 +92,10 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
 
-                android:paddingRight="5dp"
+                android:layout_marginRight="10dp"
 
-                android:src="@android:drawable/ic_menu_close_clear_cancel"
+                android:src="@drawable/ic_clear"
+
                 android:visibility="gone" />
         </LinearLayout>
 

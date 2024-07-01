@@ -11,22 +11,25 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.FrameLayout
 import android.widget.ImageView
+import androidx.core.view.isVisible
 
 class SearchActivity : AppCompatActivity() {
 
     private var inputValue : String? = INPUT_VALUE_DEF
+
+    private lateinit var inputEditText : EditText
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_search)
 
         val buttonBack = findViewById<ImageView>(R.id.button_back)
-        val inputEditText = findViewById<EditText>(R.id.inputEditText)
         val clearButton = findViewById<ImageView>(R.id.clearIcon)
+        inputEditText = findViewById<EditText>(R.id.inputEditText)
 
         buttonBack.setOnClickListener {
-            val backIntent = Intent(this, MainActivity::class.java)
-            startActivity(backIntent)}
+            finish()
+            }
 
         clearButton.setOnClickListener {
             inputEditText.setText("")
@@ -41,23 +44,18 @@ class SearchActivity : AppCompatActivity() {
             }
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                clearButton.visibility = clearButtonVisibility(s)
+                clearButton.isVisible = !s.isNullOrEmpty()
             }
 
             override fun afterTextChanged(s: Editable?) {
                 inputValue = s?.toString()
             }
         }
-
         inputEditText.addTextChangedListener(inputTextWatcher)
     }
 
-    private fun clearButtonVisibility(s: CharSequence?): Int {
-        return if (s.isNullOrEmpty()) {
-            View.GONE
-        } else {
-            View.VISIBLE
-        }
+    private fun clearButtonVisibility(s: CharSequence?): Boolean {
+        return s.isNullOrEmpty()
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -69,12 +67,11 @@ class SearchActivity : AppCompatActivity() {
         super.onRestoreInstanceState(savedInstanceState)
 
         inputValue = savedInstanceState.getString(INPUT_VALUE, INPUT_VALUE_DEF)
-        val inputEditText = findViewById<EditText>(R.id.inputEditText)
         inputEditText.setText(inputValue)
     }
 
     companion object {
-        const val INPUT_VALUE = "INPUT_VALUE"
-        const val INPUT_VALUE_DEF = ""
+        private const val INPUT_VALUE = "INPUT_VALUE"
+        private const val INPUT_VALUE_DEF = ""
     }
 }
