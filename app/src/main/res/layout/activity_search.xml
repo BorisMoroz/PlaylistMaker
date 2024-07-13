@@ -57,19 +57,14 @@
             android:layout_width="match_parent"
 
             android:layout_height="52dp"
-            android:layout_marginLeft="16dp"
-            android:layout_marginRight="16dp"
+            android:layout_marginHorizontal="16dp"
 
             android:background="@drawable/edittext_bg"
-            android:orientation="horizontal"
-
-            android:paddingLeft="0dp"
-
-            android:paddingRight="0dp">
+            android:orientation="horizontal" >
 
             <EditText
                 android:id="@+id/inputEditText"
-                style="@style/SearchActivityEditTextColorStyle"
+                style="@style/SearchActivityEditTextStyle"
                 android:layout_width="0dp"
                 android:layout_height="48dp"
                 android:layout_gravity="center"
@@ -80,17 +75,13 @@
                 android:drawableLeft="@drawable/ic_search"
                 android:drawablePadding="8dp"
 
-                android:fontFamily="@font/ys_display_regular"
                 android:hint="@string/search_screen_edittext_hint"
                 android:inputType="text"
 
                 android:maxLines="1"
 
                 android:paddingLeft="14dp"
-                android:singleLine="true"
-                android:textFontWeight="400"
-
-                android:textSize="16sp" />
+                android:singleLine="true" />
 
             <ImageView
                 android:id="@+id/clearIcon"

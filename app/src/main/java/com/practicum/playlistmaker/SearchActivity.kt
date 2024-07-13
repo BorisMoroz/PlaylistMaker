@@ -20,6 +20,7 @@ import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 
 class SearchActivity : AppCompatActivity() {
@@ -27,7 +28,6 @@ class SearchActivity : AppCompatActivity() {
     private var inputValue: String? = INPUT_VALUE_DEF
 
     private lateinit var inputEditText: EditText
-
 
     var tracks: ArrayList<Track> = arrayListOf(
         Track(
@@ -73,7 +73,7 @@ class SearchActivity : AppCompatActivity() {
         val recyclerView = findViewById<RecyclerView>(R.id.trackList)
         recyclerView.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
 
-        val trackAdapter = trackAdapter(tracks)
+        val trackAdapter = TrackAdapter(tracks)
         recyclerView.adapter = trackAdapter
 
         buttonBack.setOnClickListener {
@@ -126,45 +126,3 @@ class SearchActivity : AppCompatActivity() {
     }
 }
 
-data class Track(
-    val trackName: String,
-    val artistName: String, // Имя исполнителя
-    val trackTime: String, // Продолжительность трека
-    val artworkUrl100: String // Ссылка на изображение обложки
-)
-
-class TrackViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-    private val trackName: TextView = itemView.findViewById(R.id.trackName)
-    private val artistName: TextView = itemView.findViewById(R.id.artistName)
-    private val image = itemView.findViewById<ImageView>(R.id.image)
-
-    fun bind(track: Track) {
-        trackName.text = track.trackName
-        artistName.text = track.artistName + " • " + track.trackTime
-
-        val radiusInPixels = itemView.context.getResources()
-            .getDimensionPixelSize(R.dimen.tracklst_item_image_radius)
-
-        Glide.with(itemView)
-            .load(track.artworkUrl100)
-            .placeholder(R.drawable.placeholder)
-            .centerCrop()
-            .transform(RoundedCorners(radiusInPixels))
-            .into(image)
-    }
-}
-
-class trackAdapter(private val tracks: List<Track>) : RecyclerView.Adapter<TrackViewHolder>() {
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TrackViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.track_view, parent, false)
-        return TrackViewHolder(view)
-    }
-
-    override fun onBindViewHolder(holder: TrackViewHolder, position: Int) {
-        holder.bind(tracks[position])
-    }
-
-    override fun getItemCount(): Int {
-        return tracks.size
-    }
-}
