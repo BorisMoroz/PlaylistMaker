@@ -7,84 +7,81 @@
     tools:context=".SearchActivity">
 
     <LinearLayout
+        style="@style/SearchActivityLayoutColorStyle"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+
         android:orientation="vertical"
+        android:paddingLeft="0dp"
 
-        android:paddingLeft="16dp"
-        android:paddingRight="16dp"
-
-        style="@style/SearchActivityLayoutColorStyle">
+        android:paddingRight="0dp">
 
         <FrameLayout
+            style="@style/SearchActivityTitleColorStyle"
             android:layout_width="wrap_content"
+
             android:layout_height="56dp"
-            style="@style/SearchActivityTitleColorStyle">
+
+            android:layout_marginLeft="16dp">
 
             <ImageView
                 android:id="@+id/button_back"
 
+                style="@style/SettingsActivityTitleColorStyle"
                 android:layout_width="wrap_content"
+
                 android:layout_height="wrap_content"
+
+                android:layout_gravity="center_vertical"
 
                 android:layout_marginLeft="0dp"
-
-                android:layout_gravity="center_vertical"
-
-                android:src="@drawable/ic_arrowback"
-                style="@style/SettingsActivityTitleColorStyle"/>
+                android:src="@drawable/ic_arrowback" />
 
             <TextView
+                style="@style/SettingsActivityTitleColorStyle"
                 android:layout_width="wrap_content"
+
                 android:layout_height="wrap_content"
 
                 android:layout_gravity="center_vertical"
-
                 android:layout_marginLeft="50dp"
-                android:text="@string/search_screen_title"
 
-                android:textSize="22sp"
                 android:fontFamily="@font/ys_display_medium"
+                android:text="@string/search_screen_title"
                 android:textFontWeight="500"
-                style="@style/SettingsActivityTitleColorStyle"/>
+                android:textSize="22sp" />
         </FrameLayout>
 
         <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="52dp"
+            style="@style/SearchActivityBarColorStyle"
+            android:layout_width="match_parent"
 
-                android:orientation="horizontal"
-                android:paddingLeft="0dp"
-                android:paddingRight="0dp"
+            android:layout_height="52dp"
+            android:layout_marginHorizontal="16dp"
 
-                android:background="@drawable/edittext_bg"
-
-                style="@style/SearchActivityBarColorStyle">
+            android:background="@drawable/edittext_bg"
+            android:orientation="horizontal" >
 
             <EditText
                 android:id="@+id/inputEditText"
+                style="@style/SearchActivityEditTextStyle"
                 android:layout_width="0dp"
                 android:layout_height="48dp"
                 android:layout_gravity="center"
                 android:layout_weight="1"
-                android:paddingLeft="14dp"
 
                 android:background="@android:color/transparent"
 
                 android:drawableLeft="@drawable/ic_search"
                 android:drawablePadding="8dp"
 
-                android:inputType="text"
                 android:hint="@string/search_screen_edittext_hint"
+                android:inputType="text"
+
                 android:maxLines="1"
 
-                android:singleLine="true"
-
-                android:textSize="16sp"
-                android:fontFamily="@font/ys_display_regular"
-                android:textFontWeight="400"
-
-                style="@style/SearchActivityEditTextColorStyle"/>
+                android:paddingLeft="14dp"
+                android:singleLine="true" />
 
             <ImageView
                 android:id="@+id/clearIcon"
@@ -99,6 +96,13 @@
                 android:visibility="gone" />
         </LinearLayout>
 
-    </LinearLayout>
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/trackList"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
 
+            android:layout_marginLeft="@dimen/tracklst_marginleft"
+            android:layout_marginTop="@dimen/tracklst_margintop"
+            android:layout_marginRight="@dimen/tracklst_marginright" />
+    </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -22,4 +22,9 @@
 
     <string name="search_screen_title">Поиск</string>
     <string name="search_screen_edittext_hint">Поиск</string>
+
+    <!-- strings for trackList   -->
+
+    <string name="track_view_first_line_test_title">Here Comes The Sun (Remastered with digital quality</string>
+    <string name="track_view_second_line_test_title">The Beatles • 4:01</string>
 </resources>

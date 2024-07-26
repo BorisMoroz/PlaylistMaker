@@ -9,8 +9,9 @@
 
     <!-- track_view colors -->
 
-    <color name="track_view_background_color">#FFFFFFFF</color>
-    <color name="track_view_first_line_color">#FF000000</color>
-    <color name="track_view_second_line_color">#AEAFB4</color>
-    <color name="track_view_icon_color">#AEAFB4</color>
+    <color name="track_view_background_color">#FF000000</color>
+    <color name="track_view_first_line_color">#FFFFFFFF</color>
+    <color name="track_view_second_line_color">#FFFFFFFF</color>
+    <color name="track_view_icon_color">#FFFFFFFF</color>
+
 </resources>

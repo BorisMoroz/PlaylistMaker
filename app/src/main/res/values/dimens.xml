@@ -12,4 +12,24 @@
     <dimen name="settings_bars_padding_right">12dp</dimen>
     <dimen name="settings_switch_width">56dp</dimen>
     <dimen name="settings_switch_height">48dp</dimen>
+
+    <!-- dimens for trackList -->
+
+    <dimen name="tracklst_item_image_radius">2dp</dimen>
+
+    <dimen name="tracklst_marginleft">13dp</dimen>
+    <dimen name="tracklst_marginright">12dp</dimen>
+    <dimen name="tracklst_margintop">16dp</dimen>
+
+    <dimen name="trackview_height">61dp</dimen>
+
+    <dimen name="trackview_image_width">45dp</dimen>
+    <dimen name="trackview_image_height">45dp</dimen>
+
+    <dimen name="trackview_lines_block_marginleft">8dp</dimen>
+
+    <dimen name="trackview_first_line_textsize">16sp</dimen>
+    <dimen name="trackview_second_line_textsize">11sp</dimen>
+
+    <dimen name="trackview_arrowforward_marginleft">8dp</dimen>
 </resources>
