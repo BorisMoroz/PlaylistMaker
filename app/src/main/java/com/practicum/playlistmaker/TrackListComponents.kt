@@ -1,5 +1,6 @@
 package com.practicum.playlistmaker
 
+import android.icu.text.SimpleDateFormat
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,6 +10,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
+import java.util.Locale
 
 class TrackViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
     private val trackName: TextView = itemView.findViewById(R.id.trackName)
@@ -17,7 +19,7 @@ class TrackViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
     fun bind(track: Track) {
         trackName.text = track.trackName
-        artistName.text = track.artistName + " • " + track.trackTime
+        artistName.text = track.artistName + " • " + SimpleDateFormat("mm:ss", Locale.getDefault()).format(track.trackTimeMillis)
 
         val radiusInPixels = itemView.context.getResources()
             .getDimensionPixelSize(R.dimen.tracklst_item_image_radius)
