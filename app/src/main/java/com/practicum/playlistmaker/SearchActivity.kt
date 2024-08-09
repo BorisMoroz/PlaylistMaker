@@ -11,7 +11,9 @@ import android.view.LayoutInflater
 import android.view.RoundedCorner
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
+import android.widget.Button
 import android.widget.EditText
 import android.widget.FrameLayout
 import android.widget.ImageView
@@ -22,45 +24,32 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
 
 class SearchActivity : AppCompatActivity() {
+    private val iTunesBaseUrl = "https://itunes.apple.com"
+
+    private val retrofit = Retrofit.Builder()
+        .baseUrl(iTunesBaseUrl)
+        .addConverterFactory(GsonConverterFactory.create())
+        .build()
+
+    private val iTunesService = retrofit.create(ITunesApi::class.java)
 
     private var inputValue: String? = INPUT_VALUE_DEF
 
     private lateinit var inputEditText: EditText
+    private lateinit var trackAdapter : TrackAdapter
 
-    var tracks: ArrayList<Track> = arrayListOf(
-        Track(
-            "Smells Like Teen Spirit",
-            "Nirvana",
-            "5:01",
-            "https://is5-ssl.mzstatic.com/image/thumb/Music115/v4/7b/58/c2/7b58c21a-2b51-2bb2-e59a-9bb9b96ad8c3/00602567924166.rgb.jpg/100x100bb.jpg"
-        ),
-        Track(
-            "Billie Jean",
-            "Michael Jackson",
-            "4:35",
-            "https://is5-ssl.mzstatic.com/image/thumb/Music125/v4/3d/9d/38/3d9d3811-71f0-3a0e-1ada-3004e56ff852/827969428726.jpg/100x100bb.jpg"
-        ),
-        Track(
-            "Stayin' Alive",
-            "Bee Gees",
-            "4:10",
-            "https://is4-ssl.mzstatic.com/image/thumb/Music115/v4/1f/80/1f/1f801fc1-8c0f-ea3e-d3e5-387c6619619e/16UMGIM86640.rgb.jpg/100x100bb.jpg"
-        ),
-        Track(
-            "Whole Lotta Love",
-            "Led Zeppelin",
-            "5:33",
-            "https://is2-ssl.mzstatic.com/image/thumb/Music62/v4/7e/17/e3/7e17e33f-2efa-2a36-e916-7f808576cf6b/mzm.fyigqcbs.jpg/100x100bb.jpg"
-        ),
-        Track(
-            "Sweet Child O'Mine",
-            "Guns N' Roses",
-            "5:03",
-            "https://is5-ssl.mzstatic.com/image/thumb/Music125/v4/a0/4d/c4/a04dc484-03cc-02aa-fa82-5334fcb4bc16/18UMGIM24878.rgb.jpg/100x100bb.jpg"
-        )
-    )
+    private lateinit var messagePlaceHolder : ImageView
+    private lateinit var message : TextView
+    private lateinit var buttonUpdate : Button
+
+    var tracks: ArrayList<Track> = arrayListOf()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -73,8 +62,12 @@ class SearchActivity : AppCompatActivity() {
         val recyclerView = findViewById<RecyclerView>(R.id.trackList)
         recyclerView.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
 
-        val trackAdapter = TrackAdapter(tracks)
+        trackAdapter = TrackAdapter(tracks)
         recyclerView.adapter = trackAdapter
+
+        messagePlaceHolder = findViewById<ImageView>(R.id.messagePlaceHolder)
+        message = findViewById<TextView>(R.id.message)
+        buttonUpdate =findViewById<Button>(R.id.button_update)
 
         buttonBack.setOnClickListener {
             finish()
@@ -86,6 +79,15 @@ class SearchActivity : AppCompatActivity() {
             val inputMethod =
                 this.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
             inputMethod.hideSoftInputFromWindow(inputEditText.windowToken, 0)
+
+            tracks.clear()
+
+            trackAdapter.notifyDataSetChanged()
+        }
+
+        buttonUpdate.setOnClickListener {
+            hideMessage()
+            search()
         }
 
         val inputTextWatcher = object : TextWatcher {
@@ -99,9 +101,17 @@ class SearchActivity : AppCompatActivity() {
 
             override fun afterTextChanged(s: Editable?) {
                 inputValue = s?.toString()
+                hideMessage()
             }
         }
         inputEditText.addTextChangedListener(inputTextWatcher)
+
+        inputEditText.setOnEditorActionListener { _, actionId, _ ->
+            if (actionId == EditorInfo.IME_ACTION_DONE) {
+                if (inputEditText.text.isNotEmpty()) search()
+            }
+            false
+        }
     }
 
     private fun clearButtonVisibility(s: CharSequence?): Boolean {
@@ -118,6 +128,64 @@ class SearchActivity : AppCompatActivity() {
 
         inputValue = savedInstanceState.getString(INPUT_VALUE, INPUT_VALUE_DEF)
         inputEditText.setText(inputValue)
+    }
+
+    private fun search() {
+        iTunesService.findSong(inputEditText.text.toString()).enqueue(object : Callback<TracksResponse> {
+            override fun onResponse(
+                call: Call<TracksResponse>,
+                response: Response<TracksResponse>
+            ) {
+                tracks.clear()
+                if (response.code() == 200) {
+
+                    if (response.body()?.resultCount != 0) tracks.addAll(response.body()?.results!!)
+
+                    trackAdapter.notifyDataSetChanged()
+
+                    if (tracks.isEmpty()) showMessage(SearchResult.NOTHING)
+                    else showMessage(SearchResult.OK)
+                } else {
+                    trackAdapter.notifyDataSetChanged()
+                    showMessage(SearchResult.PROBLEM)
+                }
+            }
+            override fun onFailure(call: Call<TracksResponse>, t: Throwable) {
+                tracks.clear()
+                trackAdapter.notifyDataSetChanged()
+                showMessage(SearchResult.PROBLEM)
+            }
+        })
+    }
+    private fun showMessage(searchResult : SearchResult) {
+        when (searchResult) {
+            SearchResult.OK -> {}
+            SearchResult.NOTHING -> {
+                messagePlaceHolder.setImageResource(R.drawable.placeholder_nothing)
+                message.text = getString(R.string.search_screen_nothing_message)
+                messagePlaceHolder.isVisible = true
+                message.isVisible = true
+            }
+            SearchResult.PROBLEM -> {
+                messagePlaceHolder.setImageResource(R.drawable.placeholder_problem)
+                message.text = getString(R.string.search_screen_problem_message)
+                messagePlaceHolder.isVisible = true
+                message.isVisible = true
+                buttonUpdate.isVisible = true
+            }
+        }
+    }
+
+    private fun hideMessage() {
+        messagePlaceHolder.isVisible = false
+        message.isVisible = false
+        buttonUpdate.isVisible = false
+    }
+
+    private enum class SearchResult {
+        OK,
+        NOTHING,
+        PROBLEM
     }
 
     companion object {

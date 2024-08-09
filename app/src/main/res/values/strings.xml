@@ -22,6 +22,9 @@
 
     <string name="search_screen_title">Поиск</string>
     <string name="search_screen_edittext_hint">Поиск</string>
+    <string name="search_screen_nothing_message">Ничего не нашлось</string>
+    <string name="search_screen_problem_message">Проблемы со связью\n\nЗагрузка не удалась. Проверьте\nподключение к интернету</string>
+    <string name="update_button_text">Обновить</string>
 
     <!-- strings for trackList   -->
 

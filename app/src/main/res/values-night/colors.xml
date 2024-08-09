@@ -14,4 +14,11 @@
     <color name="track_view_second_line_color">#FFFFFFFF</color>
     <color name="track_view_icon_color">#FFFFFFFF</color>
 
+    <!-- search_activity colors -->
+
+    <color name="message_color">#FFFFFFFF</color>
+    <color name="update_button_tint_color">#FFFFFFFF</color>
+    <color name="update_button_text_color">#FF000000</color>
+
+
 </resources>
