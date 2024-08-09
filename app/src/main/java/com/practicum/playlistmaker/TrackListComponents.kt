@@ -48,7 +48,7 @@ class TrackAdapter(private val tracks: List<Track>, private val searchHistory : 
             holder.itemView.setOnClickListener{ searchHistory.addTrack(tracks[position]) }
     }
 
-    override fun getItemCount(): Int {
+    override fun getItemCount():  Int {
         return tracks.size
     }
 }

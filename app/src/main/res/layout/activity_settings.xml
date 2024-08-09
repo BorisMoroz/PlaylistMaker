@@ -67,8 +67,8 @@
                 android:layout_gravity="start|center_vertical"
                 android:text="@string/settings_theme_title"
 
-                app:thumbTint="@color/grey"
-                app:trackTint="@color/light_grey" />
+                app:thumbTint="@color/switch_thumb_tintcolor"
+                app:trackTint="@color/switch_track_tintcolor" />
         </FrameLayout>
 
         <FrameLayout

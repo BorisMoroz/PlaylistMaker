@@ -22,4 +22,9 @@
 
     <color name="search_history_title_background_color">#FFFFFFFF</color>
     <color name="search_history_title_text_color">#FF000000</color>
-</resources>
+
+    <!-- settings_activity colors -->
+
+    <color name="switch_thumb_tintcolor">#AEAFB4</color>
+    <color name="switch_track_tintcolor">#E6E8EB </color>
+ </resources>

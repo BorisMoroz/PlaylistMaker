@@ -18,7 +18,6 @@ class SearchHistory (val sharedPrefs : SharedPreferences) {
         val json = sharedPrefs.getString(SEARCH_HISTORY_KEY, null)
         if (json != null) {
             val typeToken = object : TypeToken<ArrayList<Track>>() {}.type
-            // tracks = Gson().fromJson<ArrayList<Track>>(json, typeToken)
             tracks = Gson().fromJson(json, typeToken)
         }
     }
@@ -56,10 +55,7 @@ class SearchHistory (val sharedPrefs : SharedPreferences) {
     }
 
     fun clear(){
-
         tracks.clear()
         saveTracks()
-
-
     }
 }

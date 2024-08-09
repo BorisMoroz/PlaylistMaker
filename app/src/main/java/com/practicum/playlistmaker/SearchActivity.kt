@@ -103,7 +103,7 @@ class SearchActivity : AppCompatActivity() {
 
         inputMethod = this.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
 
-            buttonBack.setOnClickListener {
+        buttonBack.setOnClickListener {
             finish()
         }
 
@@ -250,27 +250,6 @@ class SearchActivity : AppCompatActivity() {
         searchHistoryTitle.visibility = View.VISIBLE
         recyclerViewSearchHistory.visibility = View.VISIBLE
         buttonClearHistory.visibility = View.VISIBLE
-
-        var searchHistoryHeight = searchHistoryLayOut.bottom - searchHistoryLayOut.top
-
-        val delta1 = this.getResources().getDimensionPixelSize(R.dimen.searchhistory_title_height)
-        val delta2 = this.getResources().getDimensionPixelSize(R.dimen.searchhistory_list_margintop)
-        val delta3 = this.getResources().getDimensionPixelSize(R.dimen.searchhistory_button_margintop)
-        val delta4 = this.getResources().getDimensionPixelSize(R.dimen.searchhistory_button_height)
-        val delta5 = this.getResources().getDimensionPixelSize(R.dimen.searchhistory_button_marginbottom)
-
-        val delta = delta1 + delta2 + delta3 + delta4 + delta5
-
-        val searchHistoryListMaxHeight = searchHistoryHeight - delta
-
-        val trackViewHeight = this.getResources().getDimensionPixelSize(R.dimen.trackview_height)
-
-        var searchHistoryListHeight = trackViewHeight * searchHistory.tracks.size
-
-        if (searchHistoryListHeight > searchHistoryListMaxHeight)
-            searchHistoryListHeight = searchHistoryListMaxHeight
-
-        recyclerViewSearchHistory.layoutParams.height = searchHistoryListHeight
 
         trackAdapterSearchHistory.notifyDataSetChanged()
     }
