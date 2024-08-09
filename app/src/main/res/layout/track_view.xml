@@ -70,5 +70,4 @@
 
         android:src="@drawable/ic_arrowforward"
         app:tint="@color/track_view_icon_color" />
-
 </LinearLayout>

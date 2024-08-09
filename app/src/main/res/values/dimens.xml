@@ -32,4 +32,17 @@
     <dimen name="trackview_second_line_textsize">11sp</dimen>
 
     <dimen name="trackview_arrowforward_marginleft">8dp</dimen>
+
+    <!-- dimens for searchHistory -->
+
+    <dimen name="searchhistory_margintop">132dp</dimen>
+    <dimen name="searchhistory_title_height">52dp</dimen>
+    <dimen name="searchhistory_title_textsize">19sp</dimen>
+    <dimen name="searchhistory_list_margintop">8dp</dimen>
+    <dimen name="searchhistory_button_height">48dp</dimen>
+    <dimen name="searchhistory_button_margintop">24dp</dimen>
+    <dimen name="searchhistory_button_textsize">14sp</dimen>
+    <dimen name="searchhistory_button_marginbottom">24dp</dimen>
+
+
 </resources>
