@@ -44,5 +44,13 @@
     <dimen name="searchhistory_button_textsize">14sp</dimen>
     <dimen name="searchhistory_button_marginbottom">24dp</dimen>
 
+    <!-- dimens for activity_audiopleer -->
 
+    <dimen name="guidelines_1_margin">16dp</dimen>
+    <dimen name="guidelines_2_margin">24dp</dimen>
+    <dimen name="track_info_size">13sp</dimen>
+    <dimen name="track_info_values_margin">17dp</dimen>
+    <dimen name="small_buttons_width">51dp</dimen>
+    <dimen name="small_buttons_height">51dp</dimen>
+    <dimen name="cover_image_radius">8dp</dimen>
 </resources>

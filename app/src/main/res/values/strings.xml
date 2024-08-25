@@ -36,4 +36,24 @@
     <string name="search_history_title">История поиска</string>
     <string name="button_clear_text">Очистить историю</string>
 
+    <!-- strings for audiopleer -->
+
+    <string name="country_title">Страна</string>
+    <string name="genre_title">Жанр</string>
+    <string name="year_title">Год</string>
+    <string name="album_title">Альбом</string>
+    <string name="duration_title">Длительность</string>
+
+    <string name="country_check_value">Объединенные арабские эмираты</string>
+    <string name="genre_check_value">Rock</string>
+    <string name="year_check_value">1969</string>
+    <string name="album_check_value">Yesterday</string>
+    <string name="duration_check_value">2:00</string>
+
+    <string name="track_duration_check_value">0:00</string>
+
+    <string name="play_button_description">Bocпроизведение</string>
+    <string name="add_button_description">Добавить</string>
+    <string name="favorites_button_description">Избранное</string>
+    <string name="arrow_back_button_description">Назад</string>
 </resources>

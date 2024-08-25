@@ -1,5 +1,7 @@
 package com.practicum.playlistmaker
 
+import android.content.Context
+import android.content.Intent
 import android.icu.text.SimpleDateFormat
 import android.view.LayoutInflater
 import android.view.View
@@ -7,6 +9,7 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
+import androidx.core.content.ContextCompat.startActivity
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
@@ -36,16 +39,18 @@ class TrackViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
     }
 }
 
-class TrackAdapter(private val tracks: List<Track>, private val searchHistory : SearchHistory?) : RecyclerView.Adapter<TrackViewHolder>() {
+class TrackAdapter(private val tracks: List<Track>, val onChoosedTrack : (track : Track) -> Unit) : RecyclerView.Adapter<TrackViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TrackViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.track_view, parent, false)
         return TrackViewHolder(view)
     }
 
     override fun onBindViewHolder(holder: TrackViewHolder, position: Int) {
-        holder.bind(tracks[position])
-        if (searchHistory != null)
-            holder.itemView.setOnClickListener{ searchHistory.addTrack(tracks[position]) }
+       holder.bind(tracks[position])
+
+       holder.itemView.setOnClickListener{
+            onChoosedTrack.invoke(tracks[position])
+            }
     }
 
     override fun getItemCount():  Int {

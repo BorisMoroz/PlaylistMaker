@@ -4,9 +4,8 @@ import android.app.Application
 import android.content.SharedPreferences
 import androidx.appcompat.app.AppCompatDelegate
 
-const val PLAYLISTMAKER_PREFERENCES = "playlistmaker_preferences"
-const val NIGHT_THEME_STATE_KEY = "night_theme_state"
-const val SEARCH_HISTORY_KEY = "search_history"
+private const val PLAYLISTMAKER_PREFERENCES = "playlistmaker_preferences"
+private const val NIGHT_THEME_STATE_KEY = "night_theme_state"
 
 class App : Application() {
     var darkTheme = false
