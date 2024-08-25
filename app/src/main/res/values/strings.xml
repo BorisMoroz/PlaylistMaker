@@ -30,4 +30,10 @@
 
     <string name="track_view_first_line_test_title">Here Comes The Sun (Remastered with digital quality</string>
     <string name="track_view_second_line_test_title">The Beatles • 4:01</string>
+
+    <!-- strings for searchHistory -->
+
+    <string name="search_history_title">История поиска</string>
+    <string name="button_clear_text">Очистить историю</string>
+
 </resources>

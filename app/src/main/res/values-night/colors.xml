@@ -20,5 +20,11 @@
     <color name="update_button_tint_color">#FFFFFFFF</color>
     <color name="update_button_text_color">#FF000000</color>
 
+    <color name="search_history_title_background_color">#FF000000</color>
+    <color name="search_history_title_text_color">#FFFFFFFF</color>
 
+    <!-- settings_activity colors -->
+
+    <color name="switch_thumb_tintcolor">#3772E7 </color>
+    <color name="switch_track_tintcolor">#9FBBF3  </color>
 </resources>

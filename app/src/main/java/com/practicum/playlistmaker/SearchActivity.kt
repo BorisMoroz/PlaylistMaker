@@ -2,21 +2,25 @@ package com.practicum.playlistmaker
 
 import android.content.Context
 import android.content.Intent
+import android.graphics.Rect
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.text.Editable
+import android.text.InputType
 import android.text.TextWatcher
 import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.RoundedCorner
 import android.view.View
 import android.view.ViewGroup
+import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.Button
 import android.widget.EditText
 import android.widget.FrameLayout
 import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -43,11 +47,26 @@ class SearchActivity : AppCompatActivity() {
     private var inputValue: String? = INPUT_VALUE_DEF
 
     private lateinit var inputEditText: EditText
+
+    private lateinit var recyclerViewSearchResult : RecyclerView
     private lateinit var trackAdapter : TrackAdapter
 
     private lateinit var messagePlaceHolder : ImageView
     private lateinit var message : TextView
     private lateinit var buttonUpdate : Button
+
+    private lateinit var searchHistoryLayOut : LinearLayout
+
+    private lateinit var recyclerViewSearchHistory : RecyclerView
+    private lateinit var trackAdapterSearchHistory : TrackAdapter
+
+
+    private lateinit var searchHistoryTitle : TextView
+    private lateinit var buttonClearHistory : Button
+
+    private lateinit var inputMethod : InputMethodManager
+
+    private lateinit var searchHistory : SearchHistory
 
     var tracks: ArrayList<Track> = arrayListOf()
 
@@ -59,15 +78,30 @@ class SearchActivity : AppCompatActivity() {
         val clearButton = findViewById<ImageView>(R.id.clearIcon)
         inputEditText = findViewById<EditText>(R.id.inputEditText)
 
-        val recyclerView = findViewById<RecyclerView>(R.id.trackList)
-        recyclerView.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
+        searchHistory = SearchHistory((applicationContext as App).sharedPrefs)
 
-        trackAdapter = TrackAdapter(tracks)
-        recyclerView.adapter = trackAdapter
+        searchHistoryLayOut = findViewById<LinearLayout>(R.id.searchHistory)
+
+        searchHistoryTitle = findViewById<TextView>(R.id.searchHistoryTitle)
+        buttonClearHistory = findViewById<Button>(R.id.buttonClearHistory)
+
+        recyclerViewSearchResult = findViewById<RecyclerView>(R.id.trackList)
+        recyclerViewSearchResult.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
+
+        trackAdapter = TrackAdapter(tracks, searchHistory)
+        recyclerViewSearchResult.adapter = trackAdapter
+
+        recyclerViewSearchHistory = findViewById<RecyclerView>(R.id.searchHistoryList)
+        recyclerViewSearchHistory.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
+
+        trackAdapterSearchHistory = TrackAdapter(searchHistory.tracks, null)
+        recyclerViewSearchHistory.adapter = trackAdapterSearchHistory
 
         messagePlaceHolder = findViewById<ImageView>(R.id.messagePlaceHolder)
         message = findViewById<TextView>(R.id.message)
         buttonUpdate =findViewById<Button>(R.id.button_update)
+
+        inputMethod = this.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
 
         buttonBack.setOnClickListener {
             finish()
@@ -76,8 +110,6 @@ class SearchActivity : AppCompatActivity() {
         clearButton.setOnClickListener {
             inputEditText.setText("")
 
-            val inputMethod =
-                this.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
             inputMethod.hideSoftInputFromWindow(inputEditText.windowToken, 0)
 
             tracks.clear()
@@ -102,8 +134,20 @@ class SearchActivity : AppCompatActivity() {
             override fun afterTextChanged(s: Editable?) {
                 inputValue = s?.toString()
                 hideMessage()
+
+                if (inputEditText.hasFocus() && s!!.isEmpty() && !searchHistory.tracks.isEmpty()){
+                    inputEditText.setShowSoftInputOnFocus(false)
+
+                    inputMethod.hideSoftInputFromWindow(inputEditText.windowToken, 0)
+
+                    tracks.clear()
+                    trackAdapter.notifyDataSetChanged()
+
+                    showSearchHistory()
+                }
             }
         }
+
         inputEditText.addTextChangedListener(inputTextWatcher)
 
         inputEditText.setOnEditorActionListener { _, actionId, _ ->
@@ -111,6 +155,32 @@ class SearchActivity : AppCompatActivity() {
                 if (inputEditText.text.isNotEmpty()) search()
             }
             false
+        }
+
+        inputEditText.setOnFocusChangeListener { view, hasFocus ->
+            if (hasFocus && (view as EditText).text.isEmpty() && !searchHistory.tracks.isEmpty()){
+                (view as EditText).setShowSoftInputOnFocus(false)
+
+                showSearchHistory()
+            }
+        }
+
+        inputEditText.setOnClickListener {
+
+            if (inputEditText.hasFocus() && inputEditText.text.isEmpty() && !searchHistory.tracks.isEmpty()){
+                hideSearchHistory()
+
+                inputEditText.setShowSoftInputOnFocus(true)
+
+                inputMethod.showSoftInput(inputEditText, InputMethodManager.SHOW_IMPLICIT)
+            }
+        }
+
+        buttonClearHistory.setOnClickListener {
+            hideSearchHistory()
+            searchHistory.clear()
+
+            inputEditText.setShowSoftInputOnFocus(true)
         }
     }
 
@@ -176,7 +246,21 @@ class SearchActivity : AppCompatActivity() {
         }
     }
 
-    private fun hideMessage() {
+    fun showSearchHistory(){
+        searchHistoryTitle.visibility = View.VISIBLE
+        recyclerViewSearchHistory.visibility = View.VISIBLE
+        buttonClearHistory.visibility = View.VISIBLE
+
+        trackAdapterSearchHistory.notifyDataSetChanged()
+    }
+
+    fun hideSearchHistory(){
+        searchHistoryTitle.visibility = View.INVISIBLE
+        recyclerViewSearchHistory.visibility = View.INVISIBLE
+        buttonClearHistory.visibility = View.INVISIBLE
+    }
+
+     private fun hideMessage() {
         messagePlaceHolder.isVisible = false
         message.isVisible = false
         buttonUpdate.isVisible = false
@@ -193,4 +277,3 @@ class SearchActivity : AppCompatActivity() {
         private const val INPUT_VALUE_DEF = ""
     }
 }
-

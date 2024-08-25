@@ -6,10 +6,10 @@
     android:layout_height="match_parent">
 
     <LinearLayout
+        style="@style/SettingsActivityLayoutColorStyle"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        style="@style/SettingsActivityLayoutColorStyle"
 
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -19,36 +19,36 @@
         app:layout_constraintVertical_bias="0.0">
 
         <FrameLayout
+            style="@style/SettingsActivityTitleColorStyle"
             android:layout_width="wrap_content"
-            android:layout_height="56dp"
-            style="@style/SettingsActivityTitleColorStyle">
+            android:layout_height="56dp">
 
             <ImageView
                 android:id="@+id/button_back"
 
+                style="@style/SettingsActivityTitleColorStyle"
                 android:layout_width="wrap_content"
+
                 android:layout_height="wrap_content"
+
+                android:layout_gravity="center_vertical"
 
                 android:layout_marginLeft="16dp"
-
-                android:layout_gravity="center_vertical"
-
-                android:src="@drawable/ic_arrowback"
-                style="@style/SettingsActivityTitleColorStyle"/>
+                android:src="@drawable/ic_arrowback" />
 
             <TextView
+                style="@style/SettingsActivityTitleColorStyle"
                 android:layout_width="wrap_content"
+
                 android:layout_height="wrap_content"
 
                 android:layout_gravity="center_vertical"
-
                 android:layout_marginLeft="66dp"
-                android:text="@string/settings_screen_title"
 
-                android:textSize="22sp"
                 android:fontFamily="@font/ys_display_medium"
+                android:text="@string/settings_screen_title"
                 android:textFontWeight="500"
-                style="@style/SettingsActivityTitleColorStyle"/>
+                android:textSize="22sp" />
         </FrameLayout>
 
         <FrameLayout
@@ -57,16 +57,18 @@
             android:layout_marginTop="24dp"
             android:paddingRight="6dp">
 
-            <TextView
+            <com.google.android.material.switchmaterial.SwitchMaterial
+                android:id="@+id/themeSwitcher"
                 style="@style/SettingsActivityBarTitleStyle"
 
-                android:text="@string/settings_theme_title"/>
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
 
-            <Switch
-                android:layout_width="@dimen/settings_switch_width"
-                android:layout_height="@dimen/settings_switch_height"
+                android:layout_gravity="start|center_vertical"
+                android:text="@string/settings_theme_title"
 
-                android:layout_gravity="end|center_vertical" />
+                app:thumbTint="@color/switch_thumb_tintcolor"
+                app:trackTint="@color/switch_track_tintcolor" />
         </FrameLayout>
 
         <FrameLayout
@@ -76,7 +78,7 @@
             <TextView
                 style="@style/SettingsActivityBarTitleStyle"
 
-                android:text="@string/settings_share_title"/>
+                android:text="@string/settings_share_title" />
 
             <ImageView
                 style="@style/SettingsActivityBarIconStyle"
@@ -91,12 +93,12 @@
             <TextView
                 style="@style/SettingsActivityBarTitleStyle"
 
-                android:text="@string/settings_support_title"/>
+                android:text="@string/settings_support_title" />
 
             <ImageView
                 style="@style/SettingsActivityBarIconStyle"
 
-                android:src="@drawable/ic_support"/>
+                android:src="@drawable/ic_support" />
         </FrameLayout>
 
         <FrameLayout
@@ -106,12 +108,12 @@
             <TextView
                 style="@style/SettingsActivityBarTitleStyle"
 
-                android:text="@string/settings_user_title"/>
+                android:text="@string/settings_user_title" />
 
             <ImageView
                 style="@style/SettingsActivityBarIconStyle"
 
-                android:src="@drawable/ic_arrowforward"/>
+                android:src="@drawable/ic_arrowforward" />
         </FrameLayout>
     </LinearLayout>
 
