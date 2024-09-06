@@ -27,4 +27,12 @@
 
     <color name="switch_thumb_tintcolor">#3772E7 </color>
     <color name="switch_track_tintcolor">#9FBBF3  </color>
+
+    <!-- activity_audiopleer colors -->
+
+    <color name="background_color">#1A1B22</color>
+    <color name="titles_color">#AEAFB4</color>
+    <color name="values_color">#FFFFFFFF</color>
+
+
 </resources>

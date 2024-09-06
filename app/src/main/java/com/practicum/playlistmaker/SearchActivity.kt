@@ -34,6 +34,8 @@ import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
+lateinit var choosedTrack : Track
+
 class SearchActivity : AppCompatActivity() {
     private val iTunesBaseUrl = "https://itunes.apple.com"
 
@@ -59,7 +61,6 @@ class SearchActivity : AppCompatActivity() {
 
     private lateinit var recyclerViewSearchHistory : RecyclerView
     private lateinit var trackAdapterSearchHistory : TrackAdapter
-
 
     private lateinit var searchHistoryTitle : TextView
     private lateinit var buttonClearHistory : Button
@@ -88,13 +89,13 @@ class SearchActivity : AppCompatActivity() {
         recyclerViewSearchResult = findViewById<RecyclerView>(R.id.trackList)
         recyclerViewSearchResult.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
 
-        trackAdapter = TrackAdapter(tracks, searchHistory)
+        trackAdapter = TrackAdapter(tracks, onSearchResultChoosedTrack)
         recyclerViewSearchResult.adapter = trackAdapter
 
         recyclerViewSearchHistory = findViewById<RecyclerView>(R.id.searchHistoryList)
         recyclerViewSearchHistory.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
 
-        trackAdapterSearchHistory = TrackAdapter(searchHistory.tracks, null)
+        trackAdapterSearchHistory = TrackAdapter(searchHistory.tracks, onSearchHistoryChoosedTrack)
         recyclerViewSearchHistory.adapter = trackAdapterSearchHistory
 
         messagePlaceHolder = findViewById<ImageView>(R.id.messagePlaceHolder)
@@ -182,6 +183,23 @@ class SearchActivity : AppCompatActivity() {
 
             inputEditText.setShowSoftInputOnFocus(true)
         }
+    }
+
+    val onSearchResultChoosedTrack: (track : Track) -> Unit = {
+
+        track ->  searchHistory.addTrack(track)
+
+        choosedTrack = track
+
+        val pleerIntent = Intent(this, AudiopleerActivity::class.java)
+        startActivity(pleerIntent)
+    }
+
+    val onSearchHistoryChoosedTrack: (track : Track) -> Unit = {
+       track -> choosedTrack = track
+
+        val pleerIntent = Intent(this, AudiopleerActivity::class.java)
+        startActivity(pleerIntent)
     }
 
     private fun clearButtonVisibility(s: CharSequence?): Boolean {
