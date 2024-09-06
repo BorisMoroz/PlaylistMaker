@@ -3,6 +3,8 @@ package com.practicum.playlistmaker
 import android.content.Context
 import android.content.Intent
 import android.icu.text.SimpleDateFormat
+import android.os.Handler
+import android.os.Looper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -15,6 +17,8 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import java.util.Locale
+
+lateinit var choosedTrack : Track
 
 class TrackViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
     private val trackName: TextView = itemView.findViewById(R.id.trackName)
@@ -38,22 +42,30 @@ class TrackViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
             .into(image)
     }
 }
-
-class TrackAdapter(private val tracks: List<Track>, val onChoosedTrack : (track : Track) -> Unit) : RecyclerView.Adapter<TrackViewHolder>() {
+class TrackAdapter(private val tracks: List<Track>, val onChoosedTrack : () -> Unit) : RecyclerView.Adapter<TrackViewHolder>() {
+    private val handler = Handler(Looper.getMainLooper())
+    private val chooseTrackRunnable = Runnable { onChoosedTrack.invoke() }
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TrackViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.track_view, parent, false)
         return TrackViewHolder(view)
     }
-
     override fun onBindViewHolder(holder: TrackViewHolder, position: Int) {
-       holder.bind(tracks[position])
+        holder.bind(tracks[position])
 
-       holder.itemView.setOnClickListener{
-            onChoosedTrack.invoke(tracks[position])
-            }
+        holder.itemView.setOnClickListener {
+            choosedTrack = tracks[position]
+            chooseTrackDebounce()
+        }
+    }
+    override fun getItemCount(): Int {
+        return tracks.size
     }
 
-    override fun getItemCount():  Int {
-        return tracks.size
+    private fun chooseTrackDebounce() {
+        handler.removeCallbacks(chooseTrackRunnable)
+        handler.postDelayed(chooseTrackRunnable, CHOOSE_TRACK_DEBOUNCE_DELAY)
+    }
+    companion object {
+        private const val CHOOSE_TRACK_DEBOUNCE_DELAY = 500L
     }
 }

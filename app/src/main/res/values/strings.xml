@@ -50,7 +50,7 @@
     <string name="album_check_value">Yesterday</string>
     <string name="duration_check_value">2:00</string>
 
-    <string name="track_duration_check_value">0:00</string>
+    <string name="track_duration_check_value">00:00</string>
 
     <string name="play_button_description">Bocпроизведение</string>
     <string name="add_button_description">Добавить</string>
