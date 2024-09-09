@@ -95,13 +95,13 @@ class SearchActivity : AppCompatActivity() {
         recyclerViewSearchResult = findViewById<RecyclerView>(R.id.trackList)
         recyclerViewSearchResult.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
 
-        trackAdapter = TrackAdapter(tracks, onSearchResultChoosedTrack1)
+        trackAdapter = TrackAdapter(tracks, onSearchResultChoosedTrack)
         recyclerViewSearchResult.adapter = trackAdapter
 
         recyclerViewSearchHistory = findViewById<RecyclerView>(R.id.searchHistoryList)
         recyclerViewSearchHistory.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
 
-        trackAdapterSearchHistory = TrackAdapter(searchHistory.tracks, onSearchHistoryChoosedTrack1)
+        trackAdapterSearchHistory = TrackAdapter(searchHistory.tracks, onSearchHistoryChoosedTrack)
         recyclerViewSearchHistory.adapter = trackAdapterSearchHistory
 
         messagePlaceHolder = findViewById<ImageView>(R.id.messagePlaceHolder)
@@ -133,7 +133,7 @@ class SearchActivity : AppCompatActivity() {
 
         val inputTextWatcher = object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-                // empty
+                if (s.isNullOrEmpty()) hideSearchHistory()
             }
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
@@ -144,40 +144,45 @@ class SearchActivity : AppCompatActivity() {
                 inputValue = s?.toString()
                 hideMessage()
 
-                searchDebounce()
-
                 if (inputEditText.hasFocus() && s!!.isEmpty() && searchHistory.tracks.isNotEmpty()){
-                    inputEditText.setShowSoftInputOnFocus(false)
-
                     inputMethod.hideSoftInputFromWindow(inputEditText.windowToken, 0)
 
                     tracks.clear()
                     trackAdapter.notifyDataSetChanged()
 
+                    inputEditText.setShowSoftInputOnFocus(false)
+
                     showSearchHistory()
                 }
+                else
+                    inputEditText.setShowSoftInputOnFocus(true)
+
+                searchDebounce()
             }
         }
 
         inputEditText.addTextChangedListener(inputTextWatcher)
 
         inputEditText.setOnFocusChangeListener { view, hasFocus ->
-            if (hasFocus && (view as EditText).text.isEmpty() && !searchHistory.tracks.isEmpty()){
+            if (hasFocus && (view as EditText).text.isEmpty() && searchHistory.tracks.isNotEmpty()){
                 (view as EditText).setShowSoftInputOnFocus(false)
 
                 showSearchHistory()
             }
+            else
+                (view as EditText).setShowSoftInputOnFocus(true)
         }
 
         inputEditText.setOnClickListener {
+            hideMessage()
 
-            if (inputEditText.hasFocus() && inputEditText.text.isEmpty() && !searchHistory.tracks.isEmpty()){
+            if (inputEditText.hasFocus() && inputEditText.text.isEmpty() && searchHistory.tracks.isNotEmpty()){
                 hideSearchHistory()
-
                 inputEditText.setShowSoftInputOnFocus(true)
-
                 inputMethod.showSoftInput(inputEditText, InputMethodManager.SHOW_IMPLICIT)
             }
+            else
+                inputEditText.setShowSoftInputOnFocus(false)
         }
 
         buttonClearHistory.setOnClickListener {
@@ -188,7 +193,7 @@ class SearchActivity : AppCompatActivity() {
         }
     }
 
-    val onSearchResultChoosedTrack1: () -> Unit = {
+    val onSearchResultChoosedTrack: () -> Unit = {
 
         searchHistory.addTrack(choosedTrack)
 
@@ -196,7 +201,7 @@ class SearchActivity : AppCompatActivity() {
         startActivity(pleerIntent)
     }
 
-    val onSearchHistoryChoosedTrack1: () -> Unit = {
+    val onSearchHistoryChoosedTrack: () -> Unit = {
         val pleerIntent = Intent(this, AudiopleerActivity::class.java)
         startActivity(pleerIntent)
     }

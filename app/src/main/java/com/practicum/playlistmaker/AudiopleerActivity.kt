@@ -76,7 +76,8 @@ class AudiopleerActivity : AppCompatActivity() {
     }
     override fun onPause() {
         super.onPause()
-        pausePlayer()
+        if (playerState == STATE_PLAYING)
+            pausePlayer()
     }
 
     override fun onDestroy() {

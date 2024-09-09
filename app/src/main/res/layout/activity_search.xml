@@ -13,15 +13,12 @@
 
         android:orientation="vertical"
         android:paddingLeft="0dp"
-
         android:paddingRight="0dp">
 
         <FrameLayout
             style="@style/SearchActivityTitleColorStyle"
             android:layout_width="wrap_content"
-
             android:layout_height="56dp"
-
             android:layout_marginLeft="16dp">
 
             <ImageView
@@ -29,20 +26,15 @@
 
                 style="@style/SettingsActivityTitleColorStyle"
                 android:layout_width="wrap_content"
-
                 android:layout_height="wrap_content"
-
                 android:layout_gravity="center_vertical"
-
                 android:layout_marginLeft="0dp"
                 android:src="@drawable/ic_arrowback" />
 
             <TextView
                 style="@style/SettingsActivityTitleColorStyle"
                 android:layout_width="wrap_content"
-
                 android:layout_height="wrap_content"
-
                 android:layout_gravity="center_vertical"
                 android:layout_marginLeft="50dp"
 
@@ -55,7 +47,6 @@
         <LinearLayout
             style="@style/SearchActivityBarColorStyle"
             android:layout_width="match_parent"
-
             android:layout_height="52dp"
             android:layout_marginHorizontal="16dp"
 
@@ -89,7 +80,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-
                 android:layout_marginRight="10dp"
 
                 android:src="@drawable/ic_clear"
@@ -101,7 +91,6 @@
             android:id="@+id/trackList"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-
             android:layout_marginLeft="@dimen/tracklst_marginleft"
             android:layout_marginTop="@dimen/tracklst_margintop"
             android:layout_marginRight="@dimen/tracklst_marginright" />
@@ -119,7 +108,6 @@
 
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-
             android:layout_gravity="center"
 
             android:visibility="gone"
@@ -132,7 +120,6 @@
 
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-
             android:layout_gravity="center"
             android:layout_marginTop="16dp"
 
@@ -154,9 +141,7 @@
 
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-
             android:layout_gravity="center"
-
             android:layout_marginTop="24dp"
 
             android:backgroundTint="@color/update_button_tint_color"
@@ -170,7 +155,6 @@
             android:textSize="14sp"
 
             android:visibility="gone"
-
             tools:visibility="gone" />
     </LinearLayout>
 
@@ -187,15 +171,14 @@
 
             android:layout_width="wrap_content"
             android:layout_height="@dimen/searchhistory_title_height"
-
             android:layout_gravity="center"
 
+            android:background="@color/search_history_title_background_color"
             android:fontFamily="@font/ys_display_medium"
-            android:gravity="center"
 
+            android:gravity="center"
             android:text="@string/search_history_title"
             android:textColor="@color/search_history_title_text_color"
-            android:background="@color/search_history_title_background_color"
             android:textFontWeight="500"
 
             android:textSize="@dimen/searchhistory_title_textsize"
@@ -208,13 +191,11 @@
             android:id="@+id/searchHistoryList"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="1"
-
             android:layout_marginLeft="@dimen/tracklst_marginleft"
-
             android:layout_marginTop="@dimen/searchhistory_list_margintop"
-
             android:layout_marginRight="@dimen/tracklst_marginright"
+
+            android:layout_weight="1"
 
             android:visibility="invisible"
             tools:visibility="visible" />
@@ -224,9 +205,7 @@
 
             android:layout_width="wrap_content"
             android:layout_height="@dimen/searchhistory_button_height"
-
             android:layout_gravity="center"
-
             android:layout_marginTop="@dimen/searchhistory_button_margintop"
 
             android:backgroundTint="@color/update_button_tint_color"
@@ -240,18 +219,18 @@
             android:textSize="@dimen/searchhistory_button_textsize"
 
             android:visibility="invisible"
-
             tools:visibility="visible" />
     </LinearLayout>
 
-    <ProgressBar android:id="@+id/progressBar"
+    <ProgressBar
+        android:id="@+id/progressBar"
         android:layout_width="44dp"
         android:layout_height="44dp"
-        android:layout_marginTop="248dp"
         android:layout_gravity="center_horizontal"
+        android:layout_marginTop="248dp"
         android:indeterminateTint="@color/progressbar_color"
         android:visibility="gone"
-        tools:visibility="visible"/>
+        tools:visibility="visible" />
 
 </FrameLayout>
 
