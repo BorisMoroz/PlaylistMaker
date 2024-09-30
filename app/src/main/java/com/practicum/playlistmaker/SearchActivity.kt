@@ -5,6 +5,8 @@ import android.content.Intent
 import android.graphics.Rect
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.text.Editable
 import android.text.InputType
 import android.text.TextWatcher
@@ -21,6 +23,7 @@ import android.widget.EditText
 import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.LinearLayout
+import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -34,8 +37,6 @@ import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
-lateinit var choosedTrack : Track
-
 class SearchActivity : AppCompatActivity() {
     private val iTunesBaseUrl = "https://itunes.apple.com"
 
@@ -47,6 +48,9 @@ class SearchActivity : AppCompatActivity() {
     private val iTunesService = retrofit.create(ITunesApi::class.java)
 
     private var inputValue: String? = INPUT_VALUE_DEF
+
+    private val handler = Handler(Looper.getMainLooper())
+    private val searchRunnable = Runnable { search() }
 
     private lateinit var inputEditText: EditText
 
@@ -64,6 +68,8 @@ class SearchActivity : AppCompatActivity() {
 
     private lateinit var searchHistoryTitle : TextView
     private lateinit var buttonClearHistory : Button
+
+    private lateinit var searchProgressBar : ProgressBar
 
     private lateinit var inputMethod : InputMethodManager
 
@@ -102,6 +108,8 @@ class SearchActivity : AppCompatActivity() {
         message = findViewById<TextView>(R.id.message)
         buttonUpdate =findViewById<Button>(R.id.button_update)
 
+        searchProgressBar = findViewById<ProgressBar>(R.id.progressBar)
+
         inputMethod = this.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
 
         buttonBack.setOnClickListener {
@@ -125,7 +133,7 @@ class SearchActivity : AppCompatActivity() {
 
         val inputTextWatcher = object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-                // empty
+                if (s.isNullOrEmpty()) hideSearchHistory()
             }
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
@@ -136,45 +144,45 @@ class SearchActivity : AppCompatActivity() {
                 inputValue = s?.toString()
                 hideMessage()
 
-                if (inputEditText.hasFocus() && s!!.isEmpty() && !searchHistory.tracks.isEmpty()){
-                    inputEditText.setShowSoftInputOnFocus(false)
-
+                if (inputEditText.hasFocus() && s!!.isEmpty() && searchHistory.tracks.isNotEmpty()){
                     inputMethod.hideSoftInputFromWindow(inputEditText.windowToken, 0)
 
                     tracks.clear()
                     trackAdapter.notifyDataSetChanged()
 
+                    inputEditText.setShowSoftInputOnFocus(false)
+
                     showSearchHistory()
                 }
+                else
+                    inputEditText.setShowSoftInputOnFocus(true)
+
+                searchDebounce()
             }
         }
 
         inputEditText.addTextChangedListener(inputTextWatcher)
 
-        inputEditText.setOnEditorActionListener { _, actionId, _ ->
-            if (actionId == EditorInfo.IME_ACTION_DONE) {
-                if (inputEditText.text.isNotEmpty()) search()
-            }
-            false
-        }
-
         inputEditText.setOnFocusChangeListener { view, hasFocus ->
-            if (hasFocus && (view as EditText).text.isEmpty() && !searchHistory.tracks.isEmpty()){
+            if (hasFocus && (view as EditText).text.isEmpty() && searchHistory.tracks.isNotEmpty()){
                 (view as EditText).setShowSoftInputOnFocus(false)
 
                 showSearchHistory()
             }
+            else
+                (view as EditText).setShowSoftInputOnFocus(true)
         }
 
         inputEditText.setOnClickListener {
+            hideMessage()
 
-            if (inputEditText.hasFocus() && inputEditText.text.isEmpty() && !searchHistory.tracks.isEmpty()){
+            if (inputEditText.hasFocus() && inputEditText.text.isEmpty() && searchHistory.tracks.isNotEmpty()){
                 hideSearchHistory()
-
                 inputEditText.setShowSoftInputOnFocus(true)
-
                 inputMethod.showSoftInput(inputEditText, InputMethodManager.SHOW_IMPLICIT)
             }
+            else
+                inputEditText.setShowSoftInputOnFocus(false)
         }
 
         buttonClearHistory.setOnClickListener {
@@ -185,19 +193,15 @@ class SearchActivity : AppCompatActivity() {
         }
     }
 
-    val onSearchResultChoosedTrack: (track : Track) -> Unit = {
+    val onSearchResultChoosedTrack: () -> Unit = {
 
-        track ->  searchHistory.addTrack(track)
-
-        choosedTrack = track
+        searchHistory.addTrack(choosedTrack)
 
         val pleerIntent = Intent(this, AudiopleerActivity::class.java)
         startActivity(pleerIntent)
     }
 
-    val onSearchHistoryChoosedTrack: (track : Track) -> Unit = {
-       track -> choosedTrack = track
-
+    val onSearchHistoryChoosedTrack: () -> Unit = {
         val pleerIntent = Intent(this, AudiopleerActivity::class.java)
         startActivity(pleerIntent)
     }
@@ -219,31 +223,46 @@ class SearchActivity : AppCompatActivity() {
     }
 
     private fun search() {
-        iTunesService.findSong(inputEditText.text.toString()).enqueue(object : Callback<TracksResponse> {
-            override fun onResponse(
-                call: Call<TracksResponse>,
-                response: Response<TracksResponse>
-            ) {
-                tracks.clear()
-                if (response.code() == 200) {
+        val query = inputEditText.text.toString()
 
-                    if (response.body()?.resultCount != 0) tracks.addAll(response.body()?.results!!)
+        if (query.isNotEmpty()) {
+            inputMethod.hideSoftInputFromWindow(inputEditText.windowToken, 0)
+            hideSearchResults()
+            searchProgressBar.visibility = View.VISIBLE
 
-                    trackAdapter.notifyDataSetChanged()
+            iTunesService.findSong(query).enqueue(object : Callback<TracksResponse> {
+                override fun onResponse(
+                    call: Call<TracksResponse>,
+                    response: Response<TracksResponse>
+                ) {
+                    searchProgressBar.visibility = View.INVISIBLE
 
-                    if (tracks.isEmpty()) showMessage(SearchResult.NOTHING)
-                    else showMessage(SearchResult.OK)
-                } else {
+                    tracks.clear()
+                    if (response.code() == 200) {
+                        if (response.body()?.resultCount != 0) tracks.addAll(response.body()?.results!!)
+
+                        trackAdapter.notifyDataSetChanged()
+
+                        if (tracks.isEmpty()) showMessage(SearchResult.NOTHING)
+                        else {
+                            showMessage(SearchResult.OK)
+                            showSearchResults()
+                        }
+                    } else {
+                        trackAdapter.notifyDataSetChanged()
+                        showMessage(SearchResult.PROBLEM)
+                    }
+                }
+
+                override fun onFailure(call: Call<TracksResponse>, t: Throwable) {
+                    searchProgressBar.visibility = View.INVISIBLE
+
+                    tracks.clear()
                     trackAdapter.notifyDataSetChanged()
                     showMessage(SearchResult.PROBLEM)
                 }
-            }
-            override fun onFailure(call: Call<TracksResponse>, t: Throwable) {
-                tracks.clear()
-                trackAdapter.notifyDataSetChanged()
-                showMessage(SearchResult.PROBLEM)
-            }
-        })
+            })
+        }
     }
     private fun showMessage(searchResult : SearchResult) {
         when (searchResult) {
@@ -264,7 +283,7 @@ class SearchActivity : AppCompatActivity() {
         }
     }
 
-    fun showSearchHistory(){
+    private fun showSearchHistory(){
         searchHistoryTitle.visibility = View.VISIBLE
         recyclerViewSearchHistory.visibility = View.VISIBLE
         buttonClearHistory.visibility = View.VISIBLE
@@ -272,16 +291,29 @@ class SearchActivity : AppCompatActivity() {
         trackAdapterSearchHistory.notifyDataSetChanged()
     }
 
-    fun hideSearchHistory(){
+    private fun hideSearchHistory(){
         searchHistoryTitle.visibility = View.INVISIBLE
         recyclerViewSearchHistory.visibility = View.INVISIBLE
         buttonClearHistory.visibility = View.INVISIBLE
     }
 
-     private fun hideMessage() {
+    private fun showSearchResults(){
+        recyclerViewSearchResult.visibility = View.VISIBLE
+    }
+
+    private fun hideSearchResults(){
+        recyclerViewSearchResult.visibility = View.INVISIBLE
+    }
+
+    private fun hideMessage() {
         messagePlaceHolder.isVisible = false
         message.isVisible = false
         buttonUpdate.isVisible = false
+    }
+
+    private fun searchDebounce() {
+        handler.removeCallbacks(searchRunnable)
+        handler.postDelayed(searchRunnable, SEARCH_DEBOUNCE_DELAY)
     }
 
     private enum class SearchResult {
@@ -293,5 +325,7 @@ class SearchActivity : AppCompatActivity() {
     companion object {
         private const val INPUT_VALUE = "INPUT_VALUE"
         private const val INPUT_VALUE_DEF = ""
+
+        private const val SEARCH_DEBOUNCE_DELAY = 2000L
     }
 }
