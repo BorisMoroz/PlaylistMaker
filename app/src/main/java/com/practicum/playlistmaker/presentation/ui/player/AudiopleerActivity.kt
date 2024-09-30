@@ -1,4 +1,4 @@
-package com.practicum.playlistmaker
+package com.practicum.playlistmaker.presentation.ui.player
 
 import android.icu.text.SimpleDateFormat
 import android.media.MediaPlayer
@@ -12,6 +12,8 @@ import android.widget.TextView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
+import com.practicum.playlistmaker.R
+import com.practicum.playlistmaker.presentation.ui.search.choosedTrack
 import java.util.Locale
 
 class AudiopleerActivity : AppCompatActivity() {
@@ -79,13 +81,11 @@ class AudiopleerActivity : AppCompatActivity() {
         if (playerState == STATE_PLAYING)
             pausePlayer()
     }
-
     override fun onDestroy() {
         super.onDestroy()
         setTimerOff()
         mediaPlayer.release()
     }
-
     private fun preparePlayer() {
         mediaPlayer.setDataSource(choosedTrack.previewUrl)
         mediaPlayer.prepareAsync()
@@ -100,21 +100,18 @@ class AudiopleerActivity : AppCompatActivity() {
             playerState = STATE_PREPARED
         }
     }
-
     private fun startPlayer() {
         mediaPlayer.start()
         playButton.setImageResource(R.drawable.ic_pause_button)
         setTimerOn()
         playerState = STATE_PLAYING
     }
-
     private fun pausePlayer() {
         mediaPlayer.pause()
         playButton.setImageResource(R.drawable.ic_play_button)
         setTimerOff()
         playerState = STATE_PAUSED
     }
-
     private fun playbackControl() {
         when(playerState) {
             STATE_PLAYING -> {
@@ -125,27 +122,22 @@ class AudiopleerActivity : AppCompatActivity() {
             }
         }
     }
-
     private fun setTimerOn(){
         handler.post(timerRunnable)
     }
-
     private fun setTimerOff() {
         handler.removeCallbacks(timerRunnable)
     }
-
     private fun timerReset(){
         setTimerOff()
         trackDurationTextView.text = getResources().getString(R.string.track_duration_check_value)
     }
-
     private val timerRunnable = object :  Runnable {
         override fun run() {
             trackDurationTextView.text = SimpleDateFormat("mm:ss", Locale.getDefault()).format(mediaPlayer.currentPosition)
             handler.postDelayed(this, TIMER_STEP)
         }
     }
-
     companion object {
         private const val STATE_DEFAULT = 0
         private const val STATE_PREPARED = 1
