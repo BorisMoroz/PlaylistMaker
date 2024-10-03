@@ -33,15 +33,6 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
 class SearchActivity : AppCompatActivity() {
-    private val iTunesBaseUrl = "https://itunes.apple.com"
-
-    private val retrofit = Retrofit.Builder()
-        .baseUrl(iTunesBaseUrl)
-        .addConverterFactory(GsonConverterFactory.create())
-        .build()
-
-    private val iTunesApi = retrofit.create(ITunesApi::class.java)
-
     private var inputValue: String? = INPUT_VALUE_DEF
 
     private val handler = Handler(Looper.getMainLooper())
@@ -99,7 +90,7 @@ class SearchActivity : AppCompatActivity() {
         recyclerViewSearchHistory = findViewById<RecyclerView>(R.id.searchHistoryList)
         recyclerViewSearchHistory.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
 
-        trackAdapterSearchHistory = TrackAdapter(searchHistoryInteractor.getHistoryTracks() /*searchHistory.tracks*/, onSearchHistoryChoosedTrack)
+        trackAdapterSearchHistory = TrackAdapter(searchHistoryInteractor.getSearchHistoryTracks(), onSearchHistoryChoosedTrack)
         recyclerViewSearchHistory.adapter = trackAdapterSearchHistory
 
         messagePlaceHolder = findViewById<ImageView>(R.id.messagePlaceHolder)

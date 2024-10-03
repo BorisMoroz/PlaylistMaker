@@ -73,7 +73,10 @@
 
                 android:maxLines="1"
                 android:paddingLeft="14dp"
-                android:singleLine="true" />
+                android:singleLine="true"
+
+                android:textCursorDrawable="@drawable/blue_cursor"
+            />
 
             <ImageView
                 android:id="@+id/clearIcon"
