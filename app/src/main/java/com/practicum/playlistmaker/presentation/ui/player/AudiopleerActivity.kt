@@ -1,7 +1,6 @@
-package com.practicum.playlistmaker
+package com.practicum.playlistmaker.presentation.ui.player
 
 import android.icu.text.SimpleDateFormat
-import android.media.MediaPlayer
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
@@ -12,17 +11,20 @@ import android.widget.TextView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
+import com.practicum.playlistmaker.R
+import com.practicum.playlistmaker.creator.Creator
+import com.practicum.playlistmaker.domain.interactor.AudioPlayerInteractor
+import com.practicum.playlistmaker.presentation.ui.search.choosedTrack
 import java.util.Locale
 
 class AudiopleerActivity : AppCompatActivity() {
     private lateinit var playButton : ImageButton
     private lateinit var trackDurationTextView : TextView
+    private lateinit var audioPlayerInteractor : AudioPlayerInteractor
 
-    private lateinit var mediaPlayer : MediaPlayer
+    private lateinit var playButtonState : PlayButtonState
 
-    private var playerState = STATE_DEFAULT
     private val handler = Handler(Looper.getMainLooper())
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_audiopleer)
@@ -32,6 +34,8 @@ class AudiopleerActivity : AppCompatActivity() {
         backArrow.setOnClickListener {
             finish()
         }
+
+        audioPlayerInteractor = Creator.provideAudioPlayerInteractor()
 
         val coverImage = findViewById<ImageView>(R.id.cover_image)
         val trackName = findViewById<TextView>(R.id.trackTextView)
@@ -65,87 +69,81 @@ class AudiopleerActivity : AppCompatActivity() {
         duration.text = SimpleDateFormat("mm:ss", Locale.getDefault()).format(choosedTrack.trackTimeMillis)
 
         playButton.isEnabled = false
+        playButtonState = PlayButtonState.PLAY
 
-        mediaPlayer = MediaPlayer()
+        audioPlayerInteractor.preparePlayer(choosedTrack.previewUrl)
+        audioPlayerInteractor.setPlayBackCompleteCallBack{
+            changePlayButtonFromPauseToPlay()
+            timerReset()
+        }
 
-        preparePlayer()
+        playButton.isEnabled = true
+        timerReset()
 
         playButton.setOnClickListener {
-            playbackControl()
+            audioPlayerInteractor.playbackControl()
+            when (playButtonState){
+                PlayButtonState.PLAY -> changePlayButtonFromPlayToPause()
+                PlayButtonState.PAUSE -> changePlayButtonFromPauseToPlay()
+            }
+        }
+    }
+    private fun changePlayButtonFromPlayToPause(){
+        playButton.setImageResource(R.drawable.ic_pause_button)
+        playButtonState = PlayButtonState.PAUSE
+        setTimerOn()
+    }
+    private fun changePlayButtonFromPauseToPlay(){
+        playButton.setImageResource(R.drawable.ic_play_button)
+        playButtonState = PlayButtonState.PLAY
+        setTimerOff()
+    }
+    private fun changePlayButtonState(){
+        when (playButtonState){
+            PlayButtonState.PLAY -> {
+                playButton.setImageResource(R.drawable.ic_pause_button)
+                playButtonState = PlayButtonState.PAUSE
+                setTimerOn()
+            }
+            PlayButtonState.PAUSE-> {
+                playButton.setImageResource(R.drawable.ic_play_button)
+                playButtonState = PlayButtonState.PLAY
+                setTimerOff()
+            }
         }
     }
     override fun onPause() {
         super.onPause()
-        if (playerState == STATE_PLAYING)
-            pausePlayer()
-    }
+        audioPlayerInteractor.pausePlayer()
 
+        if (playButtonState == PlayButtonState.PAUSE)
+            changePlayButtonFromPauseToPlay()
+    }
     override fun onDestroy() {
         super.onDestroy()
         setTimerOff()
-        mediaPlayer.release()
+        audioPlayerInteractor.release()
     }
-
-    private fun preparePlayer() {
-        mediaPlayer.setDataSource(choosedTrack.previewUrl)
-        mediaPlayer.prepareAsync()
-        mediaPlayer.setOnPreparedListener {
-            playButton.isEnabled = true
-            playerState = STATE_PREPARED
-        }
-
-        mediaPlayer.setOnCompletionListener {
-            playButton.setImageResource(R.drawable.ic_play_button)
-            timerReset()
-            playerState = STATE_PREPARED
-        }
-    }
-
-    private fun startPlayer() {
-        mediaPlayer.start()
-        playButton.setImageResource(R.drawable.ic_pause_button)
-        setTimerOn()
-        playerState = STATE_PLAYING
-    }
-
-    private fun pausePlayer() {
-        mediaPlayer.pause()
-        playButton.setImageResource(R.drawable.ic_play_button)
-        setTimerOff()
-        playerState = STATE_PAUSED
-    }
-
-    private fun playbackControl() {
-        when(playerState) {
-            STATE_PLAYING -> {
-                pausePlayer()
-            }
-            STATE_PREPARED, STATE_PAUSED -> {
-                startPlayer()
-            }
-        }
-    }
-
     private fun setTimerOn(){
         handler.post(timerRunnable)
     }
-
     private fun setTimerOff() {
         handler.removeCallbacks(timerRunnable)
     }
-
     private fun timerReset(){
         setTimerOff()
         trackDurationTextView.text = getResources().getString(R.string.track_duration_check_value)
     }
-
     private val timerRunnable = object :  Runnable {
         override fun run() {
-            trackDurationTextView.text = SimpleDateFormat("mm:ss", Locale.getDefault()).format(mediaPlayer.currentPosition)
+            trackDurationTextView.text = SimpleDateFormat("mm:ss", Locale.getDefault()).format(audioPlayerInteractor.getcurrentPosition())
             handler.postDelayed(this, TIMER_STEP)
         }
     }
-
+    private enum class PlayButtonState {
+        PLAY,
+        PAUSE
+    }
     companion object {
         private const val STATE_DEFAULT = 0
         private const val STATE_PREPARED = 1

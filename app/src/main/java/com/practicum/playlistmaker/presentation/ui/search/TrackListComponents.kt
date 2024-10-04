@@ -1,7 +1,5 @@
-package com.practicum.playlistmaker
+package com.practicum.playlistmaker.presentation.ui.search
 
-import android.content.Context
-import android.content.Intent
 import android.icu.text.SimpleDateFormat
 import android.os.Handler
 import android.os.Looper
@@ -10,12 +8,12 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
-import android.widget.Toast
-import androidx.core.content.ContextCompat.startActivity
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
+import com.practicum.playlistmaker.R
+import com.practicum.playlistmaker.domain.models.Track
 import java.util.Locale
 
 lateinit var choosedTrack : Track
@@ -60,7 +58,6 @@ class TrackAdapter(private val tracks: List<Track>, val onChoosedTrack : () -> U
     override fun getItemCount(): Int {
         return tracks.size
     }
-
     private fun chooseTrackDebounce() {
         handler.removeCallbacks(chooseTrackRunnable)
         handler.postDelayed(chooseTrackRunnable, CHOOSE_TRACK_DEBOUNCE_DELAY)
