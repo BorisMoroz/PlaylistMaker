@@ -2,13 +2,14 @@ package com.practicum.playlistmaker.creator
 
 import android.content.Context
 import android.content.SharedPreferences
+import android.media.MediaPlayer
 import com.google.gson.Gson
 import com.practicum.playlistmaker.data.network.NetworkClient
 import com.practicum.playlistmaker.data.network.RetrofitNetworkClient
 import com.practicum.playlistmaker.data.repository.AppPrefsRepositoryImpl
 import com.practicum.playlistmaker.data.repository.SearchHistoryRepositoryImpl
 import com.practicum.playlistmaker.data.repository.TracksRepositoryImpl
-import com.practicum.playlistmaker.domain.impl.AudioPlayerRepositoryImpl
+import com.practicum.playlistmaker.data.repository.AudioPlayerRepositoryImpl
 import com.practicum.playlistmaker.domain.interactor.SearchHistoryInteractor
 import com.practicum.playlistmaker.domain.impl.SearchHistoryInteractorImpl
 import com.practicum.playlistmaker.domain.interactor.SettingsInteractor
@@ -19,12 +20,13 @@ import com.practicum.playlistmaker.domain.repository.AppPrefsRepository
 import com.practicum.playlistmaker.domain.repository.SearchHistoryRepository
 import com.practicum.playlistmaker.domain.repository.TracksRepository
 import com.practicum.playlistmaker.domain.use_case.SearchTracksUseCase
-import com.practicum.playlistmaker.presentation.ui.player.AudioPlayerInteractor
-import com.practicum.playlistmaker.presentation.ui.player.AudioPlayerInteractorImpl
-import com.practicum.playlistmaker.presentation.ui.player.AudioPlayerRepository
+import com.practicum.playlistmaker.domain.interactor.AudioPlayerInteractor
+import com.practicum.playlistmaker.domain.impl.AudioPlayerInteractorImpl
+import com.practicum.playlistmaker.domain.repository.AudioPlayerRepository
 
 object Creator {
     val gson = Gson()
+    var mediaPlayer = MediaPlayer()
     fun provideSearchTracksUseCase(): SearchTracksUseCase {
         return SearchTracksUseCase(provideTracksRepository())
     }
@@ -56,6 +58,6 @@ object Creator {
         return AudioPlayerInteractorImpl(provideAudioPlayerRepository())
     }
     private fun provideAudioPlayerRepository(): AudioPlayerRepository {
-        return AudioPlayerRepositoryImpl()
+        return AudioPlayerRepositoryImpl(mediaPlayer)
     }
 }

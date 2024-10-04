@@ -1,6 +1,10 @@
-package com.practicum.playlistmaker.presentation.ui.player
+package com.practicum.playlistmaker.domain.impl
 
-class AudioPlayerInteractorImpl(private val repository: AudioPlayerRepository) : AudioPlayerInteractor {
+import com.practicum.playlistmaker.domain.interactor.AudioPlayerInteractor
+import com.practicum.playlistmaker.domain.repository.AudioPlayerRepository
+
+class AudioPlayerInteractorImpl(private val repository: AudioPlayerRepository) :
+    AudioPlayerInteractor {
     override fun preparePlayer(path : String){
         repository.preparePlayer(path)
     }

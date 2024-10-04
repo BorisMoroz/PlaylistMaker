@@ -1,4 +1,4 @@
-package com.practicum.playlistmaker.presentation.ui.player
+package com.practicum.playlistmaker.domain.interactor
 
 interface AudioPlayerInteractor {
     fun preparePlayer(path : String)

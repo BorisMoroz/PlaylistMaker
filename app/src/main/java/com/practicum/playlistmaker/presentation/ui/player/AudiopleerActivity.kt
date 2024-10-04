@@ -1,7 +1,6 @@
 package com.practicum.playlistmaker.presentation.ui.player
 
 import android.icu.text.SimpleDateFormat
-import android.media.MediaPlayer
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
@@ -14,6 +13,7 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.practicum.playlistmaker.R
 import com.practicum.playlistmaker.creator.Creator
+import com.practicum.playlistmaker.domain.interactor.AudioPlayerInteractor
 import com.practicum.playlistmaker.presentation.ui.search.choosedTrack
 import java.util.Locale
 

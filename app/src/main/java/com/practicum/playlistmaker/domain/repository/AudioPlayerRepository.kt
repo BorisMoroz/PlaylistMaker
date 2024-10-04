@@ -1,4 +1,4 @@
-package com.practicum.playlistmaker.presentation.ui.player
+package com.practicum.playlistmaker.domain.repository
 
 interface AudioPlayerRepository {
     fun preparePlayer(path : String)

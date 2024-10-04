@@ -1,14 +1,11 @@
-package com.practicum.playlistmaker.domain.impl
+package com.practicum.playlistmaker.data.repository
 
 import android.media.MediaPlayer
-import com.practicum.playlistmaker.R
-import com.practicum.playlistmaker.presentation.ui.player.AudioPlayerRepository
-import com.practicum.playlistmaker.presentation.ui.player.AudiopleerActivity
-import com.practicum.playlistmaker.presentation.ui.search.choosedTrack
+import com.practicum.playlistmaker.domain.repository.AudioPlayerRepository
 
-class AudioPlayerRepositoryImpl : AudioPlayerRepository {
+class AudioPlayerRepositoryImpl(val mediaPlayer: MediaPlayer) : AudioPlayerRepository {
 
-    private var mediaPlayer = MediaPlayer()
+    //private var mediaPlayer = MediaPlayer()
     private var playerState = STATE_DEFAULT
 
     override fun preparePlayer(path : String){
@@ -28,7 +25,8 @@ class AudioPlayerRepositoryImpl : AudioPlayerRepository {
     override fun pausePlayer(){
         if (playerState == STATE_PLAYING){
            mediaPlayer.pause()
-           playerState = STATE_PAUSED}
+           playerState = STATE_PAUSED
+        }
     }
     override fun playbackControl() {
         when (playerState) {
