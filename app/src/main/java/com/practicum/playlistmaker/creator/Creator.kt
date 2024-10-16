@@ -1,32 +1,46 @@
 package com.practicum.playlistmaker.creator
 
+import android.app.Application
 import android.content.Context
 import android.content.SharedPreferences
 import android.media.MediaPlayer
 import com.google.gson.Gson
-import com.practicum.playlistmaker.data.network.NetworkClient
-import com.practicum.playlistmaker.data.network.RetrofitNetworkClient
-import com.practicum.playlistmaker.data.repository.AppPrefsRepositoryImpl
-import com.practicum.playlistmaker.data.repository.SearchHistoryRepositoryImpl
-import com.practicum.playlistmaker.data.repository.TracksRepositoryImpl
-import com.practicum.playlistmaker.data.repository.AudioPlayerRepositoryImpl
-import com.practicum.playlistmaker.domain.interactor.SearchHistoryInteractor
-import com.practicum.playlistmaker.domain.impl.SearchHistoryInteractorImpl
-import com.practicum.playlistmaker.domain.interactor.SettingsInteractor
-import com.practicum.playlistmaker.domain.impl.SettingsInteractorImpl
-import com.practicum.playlistmaker.domain.interactor.SwitchAppThemeInteractor
-import com.practicum.playlistmaker.domain.impl.SwitchAppThemeInteractorImpl
-import com.practicum.playlistmaker.domain.repository.AppPrefsRepository
-import com.practicum.playlistmaker.domain.repository.SearchHistoryRepository
-import com.practicum.playlistmaker.domain.repository.TracksRepository
-import com.practicum.playlistmaker.domain.use_case.SearchTracksUseCase
-import com.practicum.playlistmaker.domain.interactor.AudioPlayerInteractor
-import com.practicum.playlistmaker.domain.impl.AudioPlayerInteractorImpl
-import com.practicum.playlistmaker.domain.repository.AudioPlayerRepository
+import com.practicum.playlistmaker.search.data.network.NetworkClient
+import com.practicum.playlistmaker.search.data.network.RetrofitNetworkClient
+import com.practicum.playlistmaker.settings.data.repository.AppPrefsRepositoryImpl
+import com.practicum.playlistmaker.search.data.repository.SearchHistoryRepositoryImpl
+import com.practicum.playlistmaker.search.data.repository.TracksRepositoryImpl
+import com.practicum.playlistmaker.player.data.repository.AudioPlayerRepositoryImpl
+import com.practicum.playlistmaker.search.domain.interactor.SearchHistoryInteractor
+import com.practicum.playlistmaker.search.domain.impl.SearchHistoryInteractorImpl
+import com.practicum.playlistmaker.sharing.domain.interactor.SharingInteractor
+import com.practicum.playlistmaker.sharing.domain.impl.SharingInteractorImpl
+import com.practicum.playlistmaker.settings.domain.interactor.SwitchAppThemeInteractor
+import com.practicum.playlistmaker.settings.domain.impl.SwitchAppThemeInteractorImpl
+import com.practicum.playlistmaker.settings.domain.repository.AppPrefsRepository
+import com.practicum.playlistmaker.search.domain.repository.SearchHistoryRepository
+import com.practicum.playlistmaker.search.domain.repository.TracksRepository
+import com.practicum.playlistmaker.search.domain.use_case.SearchTracksUseCase
+import com.practicum.playlistmaker.player.domain.interactor.AudioPlayerInteractor
+import com.practicum.playlistmaker.player.domain.impl.AudioPlayerInteractorImpl
+import com.practicum.playlistmaker.player.domain.repository.AudioPlayerRepository
+import com.practicum.playlistmaker.sharing.data.repository.ExternalNavigatorImpl
+import com.practicum.playlistmaker.sharing.domain.repository.ExternalNavigator
 
 object Creator {
+    lateinit var application : Application
+    lateinit var sharedPrefs: SharedPreferences
+
     val gson = Gson()
     var mediaPlayer = MediaPlayer()
+
+    fun saveAppliation(app : Application){
+        application = app
+    }
+    fun saveSharedPrefs(sharedPrefs : SharedPreferences){
+        this.sharedPrefs = sharedPrefs
+    }
+
     fun provideSearchTracksUseCase(): SearchTracksUseCase {
         return SearchTracksUseCase(provideTracksRepository())
     }
@@ -36,23 +50,23 @@ object Creator {
     private fun provideNetworkClient(): NetworkClient {
         return RetrofitNetworkClient()
     }
-
-    fun provideSearchHistoryInteractor(sharedPrefs : SharedPreferences): SearchHistoryInteractor {
-        return SearchHistoryInteractorImpl(provideSearchHistoryRepository(sharedPrefs))
+    fun provideSearchHistoryInteractor(): SearchHistoryInteractor {
+        return SearchHistoryInteractorImpl(provideSearchHistoryRepository())
     }
-    private fun provideSearchHistoryRepository(sharedPrefs : SharedPreferences): SearchHistoryRepository {
+    private fun provideSearchHistoryRepository(): SearchHistoryRepository {
         return SearchHistoryRepositoryImpl(sharedPrefs, gson)
     }
-
-    fun provideSettingsInteractor(context: Context) : SettingsInteractor {
-        return SettingsInteractorImpl(context)
+    fun provideSharingInteractor() : SharingInteractor {
+        return SharingInteractorImpl(provideExternalNavigator())
     }
-
-    fun provideSwitchAppThemeInteractor(sharedPrefs : SharedPreferences): SwitchAppThemeInteractor {
-        return SwitchAppThemeInteractorImpl(provideAppPrefRepository(sharedPrefs))
+    private fun provideExternalNavigator() : ExternalNavigatorImpl {
+        return ExternalNavigatorImpl(application)
     }
-    private fun provideAppPrefRepository(sharedPrefs : SharedPreferences): AppPrefsRepository {
-        return AppPrefsRepositoryImpl(sharedPrefs)
+    fun provideSwitchAppThemeInteractor(): SwitchAppThemeInteractor {
+        return SwitchAppThemeInteractorImpl(provideAppPrefRepository())
+    }
+    private fun provideAppPrefRepository(): AppPrefsRepository {
+        return AppPrefsRepositoryImpl(sharedPrefs, gson)
     }
     fun provideAudioPlayerInteractor(): AudioPlayerInteractor {
         return AudioPlayerInteractorImpl(provideAudioPlayerRepository())
