@@ -1,4 +1,4 @@
-package com.practicum.playlistmaker.settings.presentation
+package com.practicum.playlistmaker.settings.ui
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -24,19 +24,19 @@ class SettingsViewModel : ViewModel() {
         this.darkThemeState.value = darkThemeState
     }
 
-    fun getCurrentDarkThemeState() : DarkThemeState{
+    fun getCurrentDarkThemeState(): DarkThemeState {
         return SwitchAppThemeInteractor.getCurrentDarkThemeState()
     }
 
-    fun shareApp(shareLink : String){
+    fun shareApp(shareLink: String) {
         SharingInteractor.shareApp(shareLink)
     }
 
-    fun openSupport(emailData : EmailData){
+    fun openSupport(emailData: EmailData) {
         SharingInteractor.openSupport(emailData)
     }
 
-    fun userAgreement(openLink : String) {
+    fun userAgreement(openLink: String) {
         SharingInteractor.userAgreement(openLink)
     }
 }

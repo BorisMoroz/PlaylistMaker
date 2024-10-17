@@ -2,7 +2,6 @@ package com.practicum.playlistmaker.search.ui
 
 import android.content.Context
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -16,22 +15,15 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.ProgressBar
 import android.widget.TextView
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.practicum.playlistmaker.App
-import com.practicum.playlistmaker.player.ui.AudiopleerActivity
 import com.practicum.playlistmaker.R
-//import com.practicum.playlistmaker.SearchHistory
-import com.practicum.playlistmaker.creator.Creator
-import com.practicum.playlistmaker.search.domain.consumer.Consumer
-import com.practicum.playlistmaker.search.domain.consumer.ConsumerData
-import com.practicum.playlistmaker.search.domain.interactor.SearchHistoryInteractor
+import com.practicum.playlistmaker.player.ui.AudiopleerActivity
 import com.practicum.playlistmaker.search.domain.models.Track
-import com.practicum.playlistmaker.search.presentation.SearchTracksState
-import com.practicum.playlistmaker.search.presentation.SearchViewModel
-import com.practicum.playlistmaker.settings.presentation.SettingsViewModel
+
 class SearchActivity : AppCompatActivity() {
     private var inputValue: String? = INPUT_VALUE_DEF
 
@@ -39,7 +31,7 @@ class SearchActivity : AppCompatActivity() {
 
     private val searchRunnable = Runnable {
         val query = inputEditText.text.toString()
-        if (query.isNotEmpty()){
+        if (query.isNotEmpty()) {
             inputMethod.hideSoftInputFromWindow(inputEditText.windowToken, 0)
             viewModel.search(query)
         }
@@ -47,26 +39,26 @@ class SearchActivity : AppCompatActivity() {
 
     private lateinit var inputEditText: EditText
 
-    private lateinit var recyclerViewSearchResult : RecyclerView
-    private lateinit var trackAdapter : TrackAdapter
+    private lateinit var recyclerViewSearchResult: RecyclerView
+    private lateinit var trackAdapter: TrackAdapter
 
-    private lateinit var messagePlaceHolder : ImageView
-    private lateinit var message : TextView
-    private lateinit var buttonUpdate : Button
+    private lateinit var messagePlaceHolder: ImageView
+    private lateinit var message: TextView
+    private lateinit var buttonUpdate: Button
 
-    private lateinit var searchHistoryLayOut : LinearLayout
+    private lateinit var searchHistoryLayOut: LinearLayout
 
-    private lateinit var recyclerViewSearchHistory : RecyclerView
-    private lateinit var trackAdapterSearchHistory : TrackAdapter
+    private lateinit var recyclerViewSearchHistory: RecyclerView
+    private lateinit var trackAdapterSearchHistory: TrackAdapter
 
-    private lateinit var searchHistoryTitle : TextView
-    private lateinit var buttonClearHistory : Button
+    private lateinit var searchHistoryTitle: TextView
+    private lateinit var buttonClearHistory: Button
 
-    private lateinit var searchProgressBar : ProgressBar
+    private lateinit var searchProgressBar: ProgressBar
 
-    private lateinit var inputMethod : InputMethodManager
+    private lateinit var inputMethod: InputMethodManager
 
-    private lateinit var viewModel : SearchViewModel
+    private lateinit var viewModel: SearchViewModel
 
     var tracks: ArrayList<Track> = arrayListOf()
 
@@ -89,21 +81,24 @@ class SearchActivity : AppCompatActivity() {
         buttonClearHistory = findViewById<Button>(R.id.buttonClearHistory)
 
         recyclerViewSearchResult = findViewById<RecyclerView>(R.id.trackList)
-        recyclerViewSearchResult.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
+        recyclerViewSearchResult.layoutManager =
+            LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
 
         trackAdapter = TrackAdapter(tracks, onSearchResultChoosedTrack)
         recyclerViewSearchResult.adapter = trackAdapter
 
         recyclerViewSearchHistory = findViewById<RecyclerView>(R.id.searchHistoryList)
-        recyclerViewSearchHistory.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
+        recyclerViewSearchHistory.layoutManager =
+            LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
 
-        trackAdapterSearchHistory = TrackAdapter(viewModel.getSearchHistoryTracks(), onSearchHistoryChoosedTrack)
+        trackAdapterSearchHistory =
+            TrackAdapter(viewModel.getSearchHistoryTracks(), onSearchHistoryChoosedTrack)
 
         recyclerViewSearchHistory.adapter = trackAdapterSearchHistory
 
         messagePlaceHolder = findViewById<ImageView>(R.id.messagePlaceHolder)
         message = findViewById<TextView>(R.id.message)
-        buttonUpdate =findViewById<Button>(R.id.button_update)
+        buttonUpdate = findViewById<Button>(R.id.button_update)
 
         searchProgressBar = findViewById<ProgressBar>(R.id.progressBar)
 
@@ -143,7 +138,7 @@ class SearchActivity : AppCompatActivity() {
                 inputValue = s?.toString()
                 hideMessage()
 
-                if (inputEditText.hasFocus() && s!!.isEmpty() && !viewModel.isSearchHistoryEmpty()){
+                if (inputEditText.hasFocus() && s!!.isEmpty() && !viewModel.isSearchHistoryEmpty()) {
                     inputMethod.hideSoftInputFromWindow(inputEditText.windowToken, 0)
 
                     tracks.clear()
@@ -152,8 +147,7 @@ class SearchActivity : AppCompatActivity() {
                     inputEditText.setShowSoftInputOnFocus(false)
 
                     showSearchHistory()
-                }
-                else
+                } else
                     inputEditText.setShowSoftInputOnFocus(true)
 
                 searchDebounceNew()
@@ -163,24 +157,22 @@ class SearchActivity : AppCompatActivity() {
         inputEditText.addTextChangedListener(inputTextWatcher)
 
         inputEditText.setOnFocusChangeListener { view, hasFocus ->
-            if (hasFocus && (view as EditText).text.isEmpty() && !viewModel.isSearchHistoryEmpty()){
+            if (hasFocus && (view as EditText).text.isEmpty() && !viewModel.isSearchHistoryEmpty()) {
                 (view as EditText).setShowSoftInputOnFocus(false)
 
                 showSearchHistory()
-            }
-            else
+            } else
                 (view as EditText).setShowSoftInputOnFocus(true)
         }
 
         inputEditText.setOnClickListener {
             hideMessage()
 
-            if (inputEditText.hasFocus() && inputEditText.text.isEmpty() && !viewModel.isSearchHistoryEmpty()){
+            if (inputEditText.hasFocus() && inputEditText.text.isEmpty() && !viewModel.isSearchHistoryEmpty()) {
                 hideSearchHistory()
                 inputEditText.setShowSoftInputOnFocus(true)
                 inputMethod.showSoftInput(inputEditText, InputMethodManager.SHOW_IMPLICIT)
-            }
-            else
+            } else
                 inputEditText.setShowSoftInputOnFocus(false)
         }
 
@@ -219,7 +211,8 @@ class SearchActivity : AppCompatActivity() {
         inputValue = savedInstanceState.getString(INPUT_VALUE, INPUT_VALUE_DEF)
         inputEditText.setText(inputValue)
     }
-    private fun showMessage(searchResult : SearchResult) {
+
+    private fun showMessage(searchResult: SearchResult) {
         when (searchResult) {
             SearchResult.OK -> {}
             SearchResult.NOTHING -> {
@@ -228,6 +221,7 @@ class SearchActivity : AppCompatActivity() {
                 messagePlaceHolder.isVisible = true
                 message.isVisible = true
             }
+
             SearchResult.PROBLEM -> {
                 messagePlaceHolder.setImageResource(R.drawable.placeholder_problem)
                 message.text = getString(R.string.search_screen_problem_message)
@@ -237,48 +231,56 @@ class SearchActivity : AppCompatActivity() {
             }
         }
     }
-    private fun showSearchHistory(){
+
+    private fun showSearchHistory() {
         searchHistoryTitle.visibility = View.VISIBLE
         recyclerViewSearchHistory.visibility = View.VISIBLE
         buttonClearHistory.visibility = View.VISIBLE
 
         trackAdapterSearchHistory.notifyDataSetChanged()
     }
-    private fun hideSearchHistory(){
+
+    private fun hideSearchHistory() {
         searchHistoryTitle.visibility = View.INVISIBLE
         recyclerViewSearchHistory.visibility = View.INVISIBLE
         buttonClearHistory.visibility = View.INVISIBLE
     }
-    private fun showSearchResults(){
+
+    private fun showSearchResults() {
         recyclerViewSearchResult.visibility = View.VISIBLE
     }
-    private fun hideSearchResults(){
+
+    private fun hideSearchResults() {
         recyclerViewSearchResult.visibility = View.INVISIBLE
     }
+
     private fun hideMessage() {
         messagePlaceHolder.isVisible = false
         message.isVisible = false
         buttonUpdate.isVisible = false
     }
+
     private fun searchDebounceNew() {
         handler.removeCallbacks(searchRunnable)
         handler.postDelayed(searchRunnable, SEARCH_DEBOUNCE_DELAY)
     }
 
-    private fun renderState(state : SearchTracksState){
+    private fun renderState(state: SearchTracksState) {
         when (state) {
             is SearchTracksState.Error -> showError()
             is SearchTracksState.Content -> showTracks(state.data)
             is SearchTracksState.Loading -> showLoading()
         }
     }
-    private fun showError(){
+
+    private fun showError() {
         searchProgressBar.visibility = View.INVISIBLE
         tracks.clear()
         trackAdapter.notifyDataSetChanged()
         showMessage(SearchResult.PROBLEM)
     }
-    private fun showTracks(data : List<Track>){
+
+    private fun showTracks(data: List<Track>) {
         searchProgressBar.visibility = View.INVISIBLE
         tracks.clear()
         tracks.addAll(data)
@@ -290,7 +292,8 @@ class SearchActivity : AppCompatActivity() {
             showSearchResults()
         }
     }
-    private fun showLoading(){
+
+    private fun showLoading() {
         hideSearchResults()
         searchProgressBar.visibility = View.VISIBLE
     }
@@ -300,6 +303,7 @@ class SearchActivity : AppCompatActivity() {
         NOTHING,
         PROBLEM
     }
+
     companion object {
         private const val INPUT_VALUE = "INPUT_VALUE"
         private const val INPUT_VALUE_DEF = ""

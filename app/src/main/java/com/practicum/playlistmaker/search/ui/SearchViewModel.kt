@@ -1,4 +1,4 @@
-package com.practicum.playlistmaker.search.presentation
+package com.practicum.playlistmaker.search.ui
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -6,9 +6,7 @@ import androidx.lifecycle.ViewModel
 import com.practicum.playlistmaker.creator.Creator
 import com.practicum.playlistmaker.search.domain.consumer.Consumer
 import com.practicum.playlistmaker.search.domain.consumer.ConsumerData
-import com.practicum.playlistmaker.search.domain.interactor.SearchHistoryInteractor
 import com.practicum.playlistmaker.search.domain.models.Track
-import com.practicum.playlistmaker.settings.domain.models.DarkThemeState
 
 class SearchViewModel : ViewModel() {
     private val SearchTracksUseCase = Creator.provideSearchTracksUseCase()
@@ -16,12 +14,12 @@ class SearchViewModel : ViewModel() {
 
     private val state = MutableLiveData<SearchTracksState>()
 
-    private var lastQuery : String = ""
+    private var lastQuery: String = ""
 
     fun getState(): LiveData<SearchTracksState> = state
 
-    fun search(query : String) {
-        if (query != lastQuery){
+    fun search(query: String) {
+        if (query != lastQuery) {
             lastQuery = query
 
             state.value = SearchTracksState.Loading
@@ -34,6 +32,7 @@ class SearchViewModel : ViewModel() {
                             val error = SearchTracksState.Error(data.message)
                             state.postValue(error)
                         }
+
                         is ConsumerData.Data -> {
                             val content = SearchTracksState.Content(data.value)
                             state.postValue(content)
@@ -42,21 +41,24 @@ class SearchViewModel : ViewModel() {
                 }
             }
             if (query.isNotEmpty()) {
-                SearchTracksUseCase.execute(query,consumer)
+                SearchTracksUseCase.execute(query, consumer)
             }
         }
     }
 
-    fun getSearchHistoryTracks() : List<Track>{
+    fun getSearchHistoryTracks(): List<Track> {
         return SearchHistoryInteractor.getSearchHistoryTracks()
     }
-    fun addSearchHistoryTrack(newTrack : Track){
+
+    fun addSearchHistoryTrack(newTrack: Track) {
         SearchHistoryInteractor.addTrack(newTrack)
     }
-    fun clearSearchHistory(){
+
+    fun clearSearchHistory() {
         SearchHistoryInteractor.clear()
     }
-    fun isSearchHistoryEmpty() : Boolean{
+
+    fun isSearchHistoryEmpty(): Boolean {
         return SearchHistoryInteractor.isEmpty()
     }
 }

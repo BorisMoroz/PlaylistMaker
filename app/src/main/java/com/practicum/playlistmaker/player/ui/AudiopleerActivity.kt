@@ -1,39 +1,35 @@
 package com.practicum.playlistmaker.player.ui
 
 import android.icu.text.SimpleDateFormat
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.practicum.playlistmaker.R
-import com.practicum.playlistmaker.creator.Creator
-import com.practicum.playlistmaker.player.domain.interactor.AudioPlayerInteractor
-import com.practicum.playlistmaker.player.presentation.AudioPleerViewModel
 import com.practicum.playlistmaker.search.ui.choosedTrack
-import com.practicum.playlistmaker.settings.presentation.SettingsViewModel
 import java.util.Locale
 
 class AudiopleerActivity : AppCompatActivity() {
-    private lateinit var playButton : ImageButton
-    private lateinit var trackDurationTextView : TextView
+    private lateinit var playButton: ImageButton
+    private lateinit var trackDurationTextView: TextView
 
-    private lateinit var playButtonState : PlayButtonState
+    private lateinit var playButtonState: PlayButtonState
 
-    private lateinit var viewModel : AudioPleerViewModel
+    private lateinit var viewModel: AudioPleerViewModel
 
-    private val handler = Handler(Looper.getMainLooper())
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_audiopleer)
 
         viewModel = ViewModelProvider(this)[AudioPleerViewModel::class.java]
+        viewModel.getAudioPlayerState().observe(this) { state ->
+            renderState(state)
+        }
 
         val backArrow = findViewById<ImageButton>(R.id.back_arrow)
 
@@ -70,76 +66,58 @@ class AudiopleerActivity : AppCompatActivity() {
         genre.text = choosedTrack.primaryGenreName
         year.text = choosedTrack.getReleaseYear()
         album.text = choosedTrack.collectionName
-        duration.text = SimpleDateFormat("mm:ss", Locale.getDefault()).format(choosedTrack.trackTimeMillis)
+        duration.text =
+            SimpleDateFormat("mm:ss", Locale.getDefault()).format(choosedTrack.trackTimeMillis)
 
         playButton.isEnabled = false
         playButtonState = PlayButtonState.PLAY
 
-        viewModel.preparePlayer(choosedTrack.previewUrl)
-        viewModel.setPlayBackCompleteCallBack{
-            changePlayButtonFromPauseToPlay()
-            timerReset()
-        }
-
         playButton.isEnabled = true
-        timerReset()
 
         playButton.setOnClickListener {
-            viewModel.playbackControl()
-            when (playButtonState){
-                PlayButtonState.PLAY -> changePlayButtonFromPlayToPause()
-                PlayButtonState.PAUSE -> changePlayButtonFromPauseToPlay()
+            when (playButtonState) {
+                PlayButtonState.PLAY -> startPlayer()
+                PlayButtonState.PAUSE -> pausePlayer()
             }
         }
     }
-    private fun changePlayButtonFromPlayToPause(){
+
+    private fun startPlayer() {
         playButton.setImageResource(R.drawable.ic_pause_button)
         playButtonState = PlayButtonState.PAUSE
-        setTimerOn()
+
+        viewModel.startPlayer()
     }
-    private fun changePlayButtonFromPauseToPlay(){
+
+    private fun pausePlayer() {
         playButton.setImageResource(R.drawable.ic_play_button)
         playButtonState = PlayButtonState.PLAY
-        setTimerOff()
+
+        viewModel.pausePlayer()
     }
     override fun onPause() {
         super.onPause()
-        viewModel.pausePlayer()
-
-        if (playButtonState == PlayButtonState.PAUSE)
-            changePlayButtonFromPauseToPlay()
+        pausePlayer()
     }
     override fun onDestroy() {
         super.onDestroy()
-        setTimerOff()
-        viewModel.reset()
+        viewModel.pausePlayer()
     }
-    private fun setTimerOn(){
-        handler.post(timerRunnable)
-    }
-    private fun setTimerOff() {
-        handler.removeCallbacks(timerRunnable)
-    }
-    private fun timerReset(){
-        setTimerOff()
-        trackDurationTextView.text = getResources().getString(R.string.track_duration_check_value)
-    }
-    private val timerRunnable = object :  Runnable {
-        override fun run() {
-            trackDurationTextView.text = SimpleDateFormat("mm:ss", Locale.getDefault()).format(viewModel.getcurrentPosition())
-            handler.postDelayed(this, TIMER_STEP)
+    private fun renderState(state: AudioPlayerState) {
+        when (state) {
+            is AudioPlayerState.Completed -> {
+                playButton.setImageResource(R.drawable.ic_play_button)
+                playButtonState = PlayButtonState.PLAY
+                trackDurationTextView.text = state.time
+            }
+            is AudioPlayerState.Default -> trackDurationTextView.text = state.time
+            is AudioPlayerState.Prepared -> trackDurationTextView.text = state.time
+            is AudioPlayerState.Playing -> trackDurationTextView.text = state.time
+            is AudioPlayerState.Paused -> trackDurationTextView.text = state.time
         }
     }
     private enum class PlayButtonState {
         PLAY,
         PAUSE
-    }
-    companion object {
-        private const val STATE_DEFAULT = 0
-        private const val STATE_PREPARED = 1
-        private const val STATE_PLAYING = 2
-        private const val STATE_PAUSED = 3
-
-        private const val TIMER_STEP = 500L
     }
 }
