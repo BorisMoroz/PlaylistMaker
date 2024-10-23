@@ -21,13 +21,17 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.practicum.playlistmaker.R
+import com.practicum.playlistmaker.player.ui.AudioPleerViewModel
 import com.practicum.playlistmaker.player.ui.AudiopleerActivity
 import com.practicum.playlistmaker.search.domain.models.Track
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class SearchActivity : AppCompatActivity() {
     private var inputValue: String? = INPUT_VALUE_DEF
 
     private val handler = Handler(Looper.getMainLooper())
+
+    private val viewModel by viewModel<SearchViewModel>()
 
     private val searchRunnable = Runnable {
         val query = inputEditText.text.toString()
@@ -58,15 +62,12 @@ class SearchActivity : AppCompatActivity() {
 
     private lateinit var inputMethod: InputMethodManager
 
-    private lateinit var viewModel: SearchViewModel
-
     var tracks: ArrayList<Track> = arrayListOf()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_search)
 
-        viewModel = ViewModelProvider(this)[SearchViewModel::class.java]
         viewModel.getState().observe(this) { state ->
             renderState(state)
         }
