@@ -4,13 +4,12 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.practicum.playlistmaker.creator.Creator
+import com.practicum.playlistmaker.settings.domain.interactor.SwitchAppThemeInteractor
 import com.practicum.playlistmaker.settings.domain.models.DarkThemeState
+import com.practicum.playlistmaker.sharing.domain.interactor.SharingInteractor
 import com.practicum.playlistmaker.sharing.domain.models.EmailData
 
-class SettingsViewModel : ViewModel() {
-    private val SharingInteractor = Creator.provideSharingInteractor()
-    private val SwitchAppThemeInteractor = Creator.provideSwitchAppThemeInteractor()
-
+class SettingsViewModel(val sharingInteractor : SharingInteractor, val switchAppThemeInteractor : SwitchAppThemeInteractor) : ViewModel() {
     private val darkThemeState = MutableLiveData<DarkThemeState>()
 
     init {
@@ -20,23 +19,23 @@ class SettingsViewModel : ViewModel() {
     fun getDarkThemeState(): LiveData<DarkThemeState> = darkThemeState
 
     fun setCurrentDarkThemeState(darkThemeState: DarkThemeState) {
-        SwitchAppThemeInteractor.setCurrentDarkThemeState(darkThemeState)
+        switchAppThemeInteractor.setCurrentDarkThemeState(darkThemeState)
         this.darkThemeState.value = darkThemeState
     }
 
     fun getCurrentDarkThemeState(): DarkThemeState {
-        return SwitchAppThemeInteractor.getCurrentDarkThemeState()
+        return switchAppThemeInteractor.getCurrentDarkThemeState()
     }
 
     fun shareApp(shareLink: String) {
-        SharingInteractor.shareApp(shareLink)
+        sharingInteractor.shareApp(shareLink)
     }
 
     fun openSupport(emailData: EmailData) {
-        SharingInteractor.openSupport(emailData)
+        sharingInteractor.openSupport(emailData)
     }
 
     fun userAgreement(openLink: String) {
-        SharingInteractor.userAgreement(openLink)
+        sharingInteractor.userAgreement(openLink)
     }
 }

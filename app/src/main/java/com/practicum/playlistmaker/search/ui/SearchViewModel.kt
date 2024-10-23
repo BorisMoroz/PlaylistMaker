@@ -6,12 +6,11 @@ import androidx.lifecycle.ViewModel
 import com.practicum.playlistmaker.creator.Creator
 import com.practicum.playlistmaker.search.domain.consumer.Consumer
 import com.practicum.playlistmaker.search.domain.consumer.ConsumerData
+import com.practicum.playlistmaker.search.domain.interactor.SearchHistoryInteractor
 import com.practicum.playlistmaker.search.domain.models.Track
+import com.practicum.playlistmaker.search.domain.use_case.SearchTracksUseCase
 
-class SearchViewModel : ViewModel() {
-    private val SearchTracksUseCase = Creator.provideSearchTracksUseCase()
-    private val SearchHistoryInteractor = Creator.provideSearchHistoryInteractor()
-
+class SearchViewModel(val searchTracksUseCase : SearchTracksUseCase, val searchHistoryInteractor : SearchHistoryInteractor) : ViewModel() {
     private val state = MutableLiveData<SearchTracksState>()
 
     private var lastQuery: String = ""
@@ -41,24 +40,24 @@ class SearchViewModel : ViewModel() {
                 }
             }
             if (query.isNotEmpty()) {
-                SearchTracksUseCase.execute(query, consumer)
+                searchTracksUseCase.execute(query, consumer)
             }
         }
     }
 
     fun getSearchHistoryTracks(): List<Track> {
-        return SearchHistoryInteractor.getSearchHistoryTracks()
+        return searchHistoryInteractor.getSearchHistoryTracks()
     }
 
     fun addSearchHistoryTrack(newTrack: Track) {
-        SearchHistoryInteractor.addTrack(newTrack)
+        searchHistoryInteractor.addTrack(newTrack)
     }
 
     fun clearSearchHistory() {
-        SearchHistoryInteractor.clear()
+        searchHistoryInteractor.clear()
     }
 
     fun isSearchHistoryEmpty(): Boolean {
-        return SearchHistoryInteractor.isEmpty()
+        return searchHistoryInteractor.isEmpty()
     }
 }

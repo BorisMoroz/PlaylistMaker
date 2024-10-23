@@ -15,7 +15,7 @@ class SearchHistoryRepositoryImpl(private val sharedPrefs : SharedPreferences, p
         loadTracks()
     }
 
-    override fun loadTracks/*SearchHistory*/() /*: List<Track>*/ {
+    override fun loadTracks() {
         val json = sharedPrefs.getString(SEARCH_HISTORY_KEY, null)
 
         if (json != null) {
@@ -33,7 +33,7 @@ class SearchHistoryRepositoryImpl(private val sharedPrefs : SharedPreferences, p
             tracks = mutableListOf()
     }
 
-    override fun saveTracks/*SearchHistory*/(/*tracks : List<Track>*/) {
+    override fun saveTracks() {
         val tracksDto = tracks.map {
             TrackDto(
                 it.trackId, it.collectionName, it.releaseDate, it.primaryGenreName, it.country,
