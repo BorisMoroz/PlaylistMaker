@@ -16,8 +16,9 @@
 
     <!-- search_activity colors -->
 
+    <color name="search_background_color">#FFFFFFFF</color>
     <color name="message_color">#FF000000</color>
-    <color name="update_button_tint_color">#FF000000</color>
+    <color name="update_button_tint_color">#1A1B22</color>
     <color name="update_button_text_color">#FFFFFFFF</color>
 
     <color name="edittext_cursor_color">#3772E7</color>
