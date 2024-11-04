@@ -12,6 +12,7 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.practicum.playlistmaker.R
 import com.practicum.playlistmaker.search.ui.choosedTrack
+import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.util.Locale
 
 class AudiopleerActivity : AppCompatActivity() {
@@ -20,13 +21,12 @@ class AudiopleerActivity : AppCompatActivity() {
 
     private lateinit var playButtonState: PlayButtonState
 
-    private lateinit var viewModel: AudioPleerViewModel
+    private val viewModel by viewModel<AudioPleerViewModel>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_audiopleer)
 
-        viewModel = ViewModelProvider(this)[AudioPleerViewModel::class.java]
         viewModel.getAudioPlayerState().observe(this) { state ->
             renderState(state)
         }
