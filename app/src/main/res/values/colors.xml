@@ -38,4 +38,23 @@
     <color name="titles_color">#AEAFB4</color>
     <color name="values_color">#FF000000 </color>
 
+    <!-- activity_media colors -->
+
+    <color name="media_background_color">#FFFFFFFF</color>
+    <color name="media_title_background_color">#FFFFFFFF</color>
+    <color name="media_title_text_color">#1A1B22</color>
+
+    <color name="media_tab_background_color">#FFFFFFFF</color>
+    <color name="media_tab_text_color">#1A1B22</color>
+    <color name="media_tab_indicator_color">#1A1B22</color>
+
+    <color name="favorite_tracks_fragment_background_color">#FFFFFFFF</color>
+
+    <color name="playlists_fragment_background_color">#FFFFFFFF</color>
+
+    <color name="playlists_fragment_new_button_color">#1A1B22</color>
+    <color name="playlists_fragment_new_button_text_color">#FFFFFFFF</color>
+
+
+
  </resources>

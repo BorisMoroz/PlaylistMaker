@@ -140,5 +140,14 @@
         <item name="android:layout_height">@dimen/small_buttons_height</item>
         <item name="android:background">@null</item>
     </style>
+
+    <!-- styles for activity_media -->
+
+
+
+
+
+
+
 </resources>
 
