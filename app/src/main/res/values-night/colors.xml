@@ -9,20 +9,21 @@
 
     <!-- track_view colors -->
 
-    <color name="track_view_background_color">#FF000000</color>
+    <color name="track_view_background_color">#1A1B22</color>
     <color name="track_view_first_line_color">#FFFFFFFF</color>
     <color name="track_view_second_line_color">#FFFFFFFF</color>
     <color name="track_view_icon_color">#FFFFFFFF</color>
 
     <!-- search_activity colors -->
 
+    <color name="search_background_color">#1A1B22</color>
     <color name="message_color">#FFFFFFFF</color>
     <color name="update_button_tint_color">#FFFFFFFF</color>
     <color name="update_button_text_color">#FF000000</color>
 
     <color name="edittext_cursor_color">#3772E7</color>
 
-    <color name="search_history_title_background_color">#FF000000</color>
+    <color name="search_history_title_background_color">#1A1B22</color>
     <color name="search_history_title_text_color">#FFFFFFFF</color>
 
     <color name="progressbar_color">#3772E7 </color>
@@ -37,6 +38,27 @@
     <color name="background_color">#1A1B22</color>
     <color name="titles_color">#AEAFB4</color>
     <color name="values_color">#FFFFFFFF</color>
+
+    <!-- activity_media colors -->
+
+
+    <color name="media_background_color">#1A1B22</color>
+    <color name="media_title_background_color">#1A1B22</color>
+    <color name="media_title_text_color">#FFFFFFFF</color>
+
+    <color name="media_tab_background_color">#1A1B22</color>
+    <color name="media_tab_text_color">#FFFFFFFF</color>
+    <color name="media_tab_indicator_color">#FFFFFFFF</color>
+
+    <color name="favorite_tracks_fragment_background_color">#1A1B22</color>
+
+    <color name="playlists_fragment_background_color">#1A1B22</color>
+
+    <color name="playlists_fragment_new_button_color">#FFFFFFFF</color>
+    <color name="playlists_fragment_new_button_text_color">#1A1B22</color>
+
+
+
 
 
 </resources>

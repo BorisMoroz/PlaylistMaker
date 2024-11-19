@@ -56,4 +56,28 @@
     <string name="add_button_description">Добавить</string>
     <string name="favorites_button_description">Избранное</string>
     <string name="arrow_back_button_description">Назад</string>
+
+    <!-- strings for media -->
+
+    <string name="media_screen_title">Медиатека</string>
+
+    <string name="favorite_tracks_fragment_empty_message">Ваша медиатека пуста</string>
+
+
+
+
+
+    <string name="button_new_playlist_text">Новый плейлист</string>
+
+
+    <string name="playlists_fragment_empty_message">Вы не создали\n ни одного плейлиста</string>
+
+    <string name="media_favorite_tracks_tab_title">Избранные треки</string>
+    <string name="media_playlists_tab_title">Плейлисты</string>
+
+
+
+
+
+
 </resources>
