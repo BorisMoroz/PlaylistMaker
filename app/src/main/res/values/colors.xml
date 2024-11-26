@@ -26,18 +26,18 @@
     <color name="search_history_title_background_color">#FFFFFFFF</color>
     <color name="search_history_title_text_color">#FF000000</color>
 
-    <color name="progressbar_color">#3772E7 </color>
+    <color name="progressbar_color">#3772E7</color>
 
     <!-- settings_activity colors -->
 
     <color name="switch_thumb_tintcolor">#AEAFB4</color>
-    <color name="switch_track_tintcolor">#E6E8EB </color>
+    <color name="switch_track_tintcolor">#E6E8EB</color>
 
     <!-- activity_audiopleer colors -->
 
     <color name="background_color">#FFFFFFFF</color>
     <color name="titles_color">#AEAFB4</color>
-    <color name="values_color">#FF000000 </color>
+    <color name="values_color">#FF000000</color>
 
     <!-- activity_media colors -->
 
@@ -56,6 +56,16 @@
     <color name="playlists_fragment_new_button_color">#1A1B22</color>
     <color name="playlists_fragment_new_button_text_color">#FFFFFFFF</color>
 
+    <color name="tabindicator_color">#1A1B22</color>
 
+    <!-- bottomnavigation_menu colors -->
 
- </resources>
+    <color name="bottomnavigation_menu_item_icon_checked_color">#3772E7</color>
+    <color name="bottomnavigation_menu_item_icon_default_color">#1A1B22</color>
+
+    <color name="bottomnavigation_menu_item_background_color">#FFFFFFFF</color>
+
+    <color name="bottomnavigation_menu_item_text_color">#1A1B22</color>
+
+    <color name="bottomnavigation_menu_splitter_color">#E6E8EB</color>
+</resources>
