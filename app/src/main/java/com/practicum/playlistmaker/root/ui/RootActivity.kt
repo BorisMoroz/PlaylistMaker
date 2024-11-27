@@ -2,6 +2,8 @@ package com.practicum.playlistmaker.root.ui
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
 import com.google.android.material.bottomnavigation.BottomNavigationView
@@ -22,5 +24,15 @@ class RootActivity : AppCompatActivity() {
 
         val bottomNavigationView = findViewById<BottomNavigationView>(R.id.bottomNavigationView)
         bottomNavigationView.setupWithNavController(navController)
+
+
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.bottomNavigationView)) { v, insets ->
+            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+            v.setPadding(systemBars.left, 0, systemBars.right,0)
+            insets
+        }
+
+
+
     }
 }
