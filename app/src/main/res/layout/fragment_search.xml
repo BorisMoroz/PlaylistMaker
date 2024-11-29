@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/search_background_color"
-    tools:context=".search.ui.SearchActivity">
+    tools:context=".search.ui.SearchFragment">
 
     <LinearLayout
         style="@style/SearchActivityLayoutColorStyle"
@@ -22,22 +22,12 @@
             android:layout_height="56dp"
             android:layout_marginLeft="16dp">
 
-            <ImageView
-                android:id="@+id/button_back"
-
-                style="@style/SearchActivityTitleColorStyle"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:layout_marginLeft="0dp"
-                android:src="@drawable/ic_arrowback" />
-
             <TextView
                 style="@style/SearchActivityTitleColorStyle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
-                android:layout_marginLeft="50dp"
+                android:layout_marginLeft="0dp"
 
                 android:fontFamily="@font/ys_display_medium"
                 android:text="@string/search_screen_title"
@@ -76,8 +66,7 @@
                 android:paddingLeft="14dp"
                 android:singleLine="true"
 
-                android:textCursorDrawable="@drawable/blue_cursor"
-            />
+                android:textCursorDrawable="@drawable/blue_cursor" />
 
             <ImageView
                 android:id="@+id/clearIcon"
@@ -235,7 +224,6 @@
         android:indeterminateTint="@color/progressbar_color"
         android:visibility="gone"
         tools:visibility="visible" />
-
 </FrameLayout>
 
 

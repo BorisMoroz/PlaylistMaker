@@ -63,21 +63,16 @@
 
     <string name="favorite_tracks_fragment_empty_message">Ваша медиатека пуста</string>
 
-
-
-
-
     <string name="button_new_playlist_text">Новый плейлист</string>
-
 
     <string name="playlists_fragment_empty_message">Вы не создали\n ни одного плейлиста</string>
 
     <string name="media_favorite_tracks_tab_title">Избранные треки</string>
     <string name="media_playlists_tab_title">Плейлисты</string>
 
+    <!-- strings for bottomnavigation_menu -->
 
-
-
-
-
+    <string name="bottomnavigation_menu_search_title">Поиск</string>
+    <string name="bottomnavigation_menu_media_title">Медиатека</string>
+    <string name="bottomnavigation_menu_settings_title">Настройки</string>
 </resources>
