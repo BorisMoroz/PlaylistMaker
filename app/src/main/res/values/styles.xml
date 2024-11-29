@@ -26,6 +26,24 @@
         <item name="android:letterSpacing">0</item>
     </style>
 
+    <!-- styles for activity_root -->
+
+    <style name="MyBottomNavigationView" parent="Widget.MaterialComponents.BottomNavigationView">
+        <item name="itemBackground">@color/bottomnavigation_menu_item_background_color</item>
+        <item name="itemActiveIndicatorStyle">@null</item>
+
+        <item name="itemIconTint">@drawable/bottom_navigation_selector</item>
+        <item name="itemTextColor">@drawable/bottom_navigation_selector</item>
+        <item name="itemTextAppearanceActive">@style/MyBottomNavigationView.TextAppearance</item>
+        <item name="itemTextAppearanceInactive">@style/MyBottomNavigationView.TextAppearance</item>
+    </style>
+
+    <style name="MyBottomNavigationView.TextAppearance" parent="TextAppearance.MaterialComponents.Caption">
+        <item name="android:textSize">12sp</item>
+        <item name="android:fontFamily">@font/ys_display_regular</item>
+        <item name="android:textFontWeight">400</item>
+    </style>
+
     <!-- styles for activity_settings -->
 
     <style name="SettingsActivityLayoutColorStyle">
@@ -140,14 +158,5 @@
         <item name="android:layout_height">@dimen/small_buttons_height</item>
         <item name="android:background">@null</item>
     </style>
-
-    <!-- styles for activity_media -->
-
-
-
-
-
-
-
 </resources>
 

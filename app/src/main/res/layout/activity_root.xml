@@ -32,22 +32,14 @@
         app:layout_constraintStart_toStartOf="parent"/>
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
+        style="@style/MyBottomNavigationView"
+
         android:id="@+id/bottomNavigationView"
         android:layout_width="0dp"
         android:layout_height="56dp"
         android:background="@color/white"
 
-        android:paddingTop="0dp"
-        android:paddingBottom="0dp"
-
-        app:itemBackground="@color/bottomnavigation_menu_item_background_color"
-        app:itemIconTint="@drawable/bottom_navigation_selector"
-        app:itemTextColor="@drawable/bottom_navigation_selector"
-
-        app:itemActiveIndicatorStyle="@null"
-
         app:layout_constraintBottom_toBottomOf="parent"
-
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:menu="@menu/bottom_navigation_menu"/>
