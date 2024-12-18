@@ -18,28 +18,24 @@ import android.widget.LinearLayout
 import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.core.view.isVisible
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.practicum.playlistmaker.R
 import com.practicum.playlistmaker.databinding.FragmentSearchBinding
 import com.practicum.playlistmaker.search.domain.models.Track
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class SearchFragment : Fragment() {
     private var inputValue: String? = INPUT_VALUE_DEF
 
-    private val handler = Handler(Looper.getMainLooper())
+    private var searchJob: Job? = null
 
     private val viewModel by viewModel<SearchViewModel>()
-
-    private val searchRunnable = Runnable {
-        val query = inputEditText.text.toString()
-        if (query.isNotEmpty()) {
-            inputMethod.hideSoftInputFromWindow(inputEditText.windowToken, 0)
-            viewModel.search(query)
-        }
-    }
 
     private lateinit var binding: FragmentSearchBinding
 
@@ -70,11 +66,8 @@ class SearchFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-
         if (savedInstanceState != null) {
-
             inputValue = savedInstanceState.getString(INPUT_VALUE, INPUT_VALUE_DEF)
-
         }
     }
 
@@ -103,7 +96,7 @@ class SearchFragment : Fragment() {
         recyclerViewSearchResult.layoutManager =
             LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
 
-        trackAdapter = TrackAdapter(tracks, onSearchResultChoosedTrack)
+        trackAdapter = TrackAdapter(tracks, onSearchResultChoosedTrack, viewLifecycleOwner.lifecycleScope)
         recyclerViewSearchResult.adapter = trackAdapter
 
         recyclerViewSearchHistory = binding.searchHistoryList
@@ -111,7 +104,7 @@ class SearchFragment : Fragment() {
             LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
 
         trackAdapterSearchHistory =
-            TrackAdapter(viewModel.getSearchHistoryTracks(), onSearchHistoryChoosedTrack)
+            TrackAdapter(viewModel.getSearchHistoryTracks(), onSearchHistoryChoosedTrack, viewLifecycleOwner.lifecycleScope)
 
         recyclerViewSearchHistory.adapter = trackAdapterSearchHistory
 
@@ -135,9 +128,7 @@ class SearchFragment : Fragment() {
 
         buttonUpdate.setOnClickListener {
             hideMessage()
-
-            val query = inputEditText.text.toString()
-            viewModel.search(query)
+            searchRequest(true)
         }
 
         val inputTextWatcher = object : TextWatcher {
@@ -266,9 +257,20 @@ class SearchFragment : Fragment() {
         buttonUpdate.isVisible = false
     }
 
+    private fun searchRequest(anyway: Boolean) {
+        val query = inputEditText.text.toString()
+        if (query.isNotEmpty()) {
+            inputMethod.hideSoftInputFromWindow(inputEditText.windowToken, 0)
+            viewModel.search(query, anyway)
+        }
+    }
+
     private fun searchDebounceNew() {
-        handler.removeCallbacks(searchRunnable)
-        handler.postDelayed(searchRunnable, SEARCH_DEBOUNCE_DELAY)
+        searchJob?.cancel()
+        searchJob = viewLifecycleOwner.lifecycleScope.launch {
+            delay(SEARCH_DEBOUNCE_DELAY)
+            searchRequest(false)
+        }
     }
 
     private fun renderState(state: SearchTracksState) {
