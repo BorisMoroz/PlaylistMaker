@@ -3,12 +3,15 @@ package com.practicum.playlistmaker.search.ui
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.practicum.playlistmaker.creator.Creator
 import com.practicum.playlistmaker.search.domain.consumer.Consumer
 import com.practicum.playlistmaker.search.domain.consumer.ConsumerData
 import com.practicum.playlistmaker.search.domain.interactor.SearchHistoryInteractor
+import com.practicum.playlistmaker.search.domain.models.Resource
 import com.practicum.playlistmaker.search.domain.models.Track
 import com.practicum.playlistmaker.search.domain.use_case.SearchTracksUseCase
+import kotlinx.coroutines.launch
 
 class SearchViewModel(val searchTracksUseCase : SearchTracksUseCase, val searchHistoryInteractor : SearchHistoryInteractor) : ViewModel() {
     private val state = MutableLiveData<SearchTracksState>()
@@ -17,30 +20,27 @@ class SearchViewModel(val searchTracksUseCase : SearchTracksUseCase, val searchH
 
     fun getState(): LiveData<SearchTracksState> = state
 
-    fun search(query: String) {
-        if (query != lastQuery) {
+    fun search(query: String, anyway: Boolean) {
+        if (query != lastQuery || anyway) {
             lastQuery = query
 
             state.value = SearchTracksState.Loading
 
-            val consumer = object : Consumer<List<Track>> {
-                override fun consume(data: ConsumerData<List<Track>>) {
-
-                    when (data) {
-                        is ConsumerData.Error -> {
-                            val error = SearchTracksState.Error(data.message)
-                            state.postValue(error)
-                        }
-
-                        is ConsumerData.Data -> {
-                            val content = SearchTracksState.Content(data.value)
-                            state.postValue(content)
+            viewModelScope.launch {
+                searchTracksUseCase
+                    .execute(query)
+                    .collect { result ->
+                        when (result) {
+                            is Resource.Error -> {
+                                val error = SearchTracksState.Error(result.message)
+                                state.postValue(error)
+                            }
+                            is Resource.Success -> {
+                                val content = SearchTracksState.Content(result.data)
+                                state.postValue(content)
+                            }
                         }
                     }
-                }
-            }
-            if (query.isNotEmpty()) {
-                searchTracksUseCase.execute(query, consumer)
             }
         }
     }
