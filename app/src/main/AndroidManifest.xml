@@ -15,27 +15,19 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.PlaylistMaker"
         tools:targetApi="31">
-        <activity
-            android:name=".player.ui.AudiopleerActivity"
-            android:exported="false" />
-        <activity
-            android:name=".media.ui.MediaActivity"
-            android:exported="false" />
-        <activity
-            android:name=".search.ui.SearchActivity"
-            android:exported="false" />
-        <activity
-            android:name=".settings.ui.SettingsActivity"
-            android:exported="false" />
-        <activity
-            android:name=".main.ui.MainActivity"
-            android:exported="true">
+
+        <activity android:name=".root.ui.RootActivity"
+            android:exported="true"
+            android:windowSoftInputMode="adjustPan">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-    </application>
 
+        <activity
+            android:name=".player.ui.AudiopleerActivity"
+            android:exported="false" />
+    </application>
 </manifest>

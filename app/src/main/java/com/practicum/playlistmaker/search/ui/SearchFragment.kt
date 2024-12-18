@@ -1,13 +1,15 @@
 package com.practicum.playlistmaker.search.ui
 
 import android.content.Context
-import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.text.Editable
 import android.text.TextWatcher
+import androidx.fragment.app.Fragment
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import android.widget.Button
 import android.widget.EditText
@@ -15,18 +17,16 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.ProgressBar
 import android.widget.TextView
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
-import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.practicum.playlistmaker.R
-import com.practicum.playlistmaker.player.ui.AudioPleerViewModel
-import com.practicum.playlistmaker.player.ui.AudiopleerActivity
+import com.practicum.playlistmaker.databinding.FragmentSearchBinding
 import com.practicum.playlistmaker.search.domain.models.Track
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class SearchActivity : AppCompatActivity() {
+class SearchFragment : Fragment() {
     private var inputValue: String? = INPUT_VALUE_DEF
 
     private val handler = Handler(Looper.getMainLooper())
@@ -40,6 +40,8 @@ class SearchActivity : AppCompatActivity() {
             viewModel.search(query)
         }
     }
+
+    private lateinit var binding: FragmentSearchBinding
 
     private lateinit var inputEditText: EditText
 
@@ -64,50 +66,62 @@ class SearchActivity : AppCompatActivity() {
 
     var tracks: ArrayList<Track> = arrayListOf()
 
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_search)
 
-        viewModel.getState().observe(this) { state ->
+
+        if (savedInstanceState != null) {
+
+            inputValue = savedInstanceState.getString(INPUT_VALUE, INPUT_VALUE_DEF)
+
+        }
+    }
+
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        binding = FragmentSearchBinding.inflate(inflater, container, false)
+        return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?){
+        super.onViewCreated(view, savedInstanceState)
+
+        viewModel.getState().observe(viewLifecycleOwner) { state ->
             renderState(state)
         }
 
-        val buttonBack = findViewById<ImageView>(R.id.button_back)
-        val clearButton = findViewById<ImageView>(R.id.clearIcon)
-        inputEditText = findViewById<EditText>(R.id.inputEditText)
+        val clearButton = binding.clearIcon
+        inputEditText = binding.inputEditText
+        inputEditText.setText(inputValue)
 
-        searchHistoryLayOut = findViewById<LinearLayout>(R.id.searchHistory)
+        searchHistoryLayOut = binding.searchHistory
 
-        searchHistoryTitle = findViewById<TextView>(R.id.searchHistoryTitle)
-        buttonClearHistory = findViewById<Button>(R.id.buttonClearHistory)
+        searchHistoryTitle = binding.searchHistoryTitle
+        buttonClearHistory = binding.buttonClearHistory
 
-        recyclerViewSearchResult = findViewById<RecyclerView>(R.id.trackList)
+        recyclerViewSearchResult = binding.trackList//findViewById<RecyclerView>(R.id.trackList)
         recyclerViewSearchResult.layoutManager =
-            LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
+            LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
 
         trackAdapter = TrackAdapter(tracks, onSearchResultChoosedTrack)
         recyclerViewSearchResult.adapter = trackAdapter
 
-        recyclerViewSearchHistory = findViewById<RecyclerView>(R.id.searchHistoryList)
+        recyclerViewSearchHistory = binding.searchHistoryList
         recyclerViewSearchHistory.layoutManager =
-            LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
+            LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
 
         trackAdapterSearchHistory =
             TrackAdapter(viewModel.getSearchHistoryTracks(), onSearchHistoryChoosedTrack)
 
         recyclerViewSearchHistory.adapter = trackAdapterSearchHistory
 
-        messagePlaceHolder = findViewById<ImageView>(R.id.messagePlaceHolder)
-        message = findViewById<TextView>(R.id.message)
-        buttonUpdate = findViewById<Button>(R.id.button_update)
+        messagePlaceHolder = binding.messagePlaceHolder
+        message = binding.message
+        buttonUpdate = binding.buttonUpdate
 
-        searchProgressBar = findViewById<ProgressBar>(R.id.progressBar)
+        searchProgressBar = binding.progressBar
 
-        inputMethod = this.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-
-        buttonBack.setOnClickListener {
-            finish()
-        }
+        inputMethod = requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
 
         clearButton.setOnClickListener {
             inputEditText.setText("")
@@ -188,13 +202,11 @@ class SearchActivity : AppCompatActivity() {
     val onSearchResultChoosedTrack: () -> Unit = {
         viewModel.addSearchHistoryTrack(choosedTrack)
 
-        val pleerIntent = Intent(this, AudiopleerActivity::class.java)
-        startActivity(pleerIntent)
+        findNavController().navigate(R.id.action_searchFragment_to_audiopleerActivity)
     }
 
     val onSearchHistoryChoosedTrack: () -> Unit = {
-        val pleerIntent = Intent(this, AudiopleerActivity::class.java)
-        startActivity(pleerIntent)
+        findNavController().navigate(R.id.action_searchFragment_to_audiopleerActivity)
     }
 
     private fun clearButtonVisibility(s: CharSequence?): Boolean {
@@ -204,13 +216,6 @@ class SearchActivity : AppCompatActivity() {
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
         outState.putString(INPUT_VALUE, inputValue)
-    }
-
-    override fun onRestoreInstanceState(savedInstanceState: Bundle) {
-        super.onRestoreInstanceState(savedInstanceState)
-
-        inputValue = savedInstanceState.getString(INPUT_VALUE, INPUT_VALUE_DEF)
-        inputEditText.setText(inputValue)
     }
 
     private fun showMessage(searchResult: SearchResult) {
