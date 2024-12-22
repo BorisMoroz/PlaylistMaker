@@ -6,13 +6,17 @@ import android.os.Looper
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.practicum.playlistmaker.creator.Creator
 import com.practicum.playlistmaker.player.domain.interactor.AudioPlayerInteractor
 import com.practicum.playlistmaker.search.ui.choosedTrack
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import java.util.Locale
 
 class AudioPleerViewModel(val audioPlayerInteractor : AudioPlayerInteractor) : ViewModel() {
-    private val handler = Handler(Looper.getMainLooper())
+    private var timerJob: Job? = null
 
     private val audioPlayerState =
         MutableLiveData<AudioPlayerState>(AudioPlayerState.Default(formatTime(0)))
@@ -54,17 +58,16 @@ class AudioPleerViewModel(val audioPlayerInteractor : AudioPlayerInteractor) : V
         audioPlayerInteractor.setPlayBackCompleteCallBack(callBack)
     }
 
-    private val timerRunnable = object : Runnable {
-        override fun run() {
-            audioPlayerState.value = AudioPlayerState.Playing(formatTime(getcurrentPosition()))
-            handler.postDelayed(this, TIMER_STEP)
+    private fun setTimerOn() {
+        timerJob = viewModelScope.launch {
+            while (true) {
+                delay(TIMER_STEP)
+                audioPlayerState.value = AudioPlayerState.Playing(formatTime(getcurrentPosition()))
+            }
         }
     }
-    private fun setTimerOn() {
-        handler.post(timerRunnable)
-    }
     private fun setTimerOff() {
-        handler.removeCallbacks(timerRunnable)
+        timerJob?.cancel()
     }
     private fun onComplete() {
         setTimerOff()
@@ -77,7 +80,7 @@ class AudioPleerViewModel(val audioPlayerInteractor : AudioPlayerInteractor) : V
         audioPlayerInteractor.reset()
     }
     companion object {
-        private const val TIMER_STEP = 500L
+        private const val TIMER_STEP = 300L
     }
 }
 

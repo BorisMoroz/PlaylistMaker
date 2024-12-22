@@ -14,6 +14,10 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.practicum.playlistmaker.R
 import com.practicum.playlistmaker.search.domain.models.Track
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import java.util.Locale
 
 lateinit var choosedTrack : Track
@@ -40,9 +44,8 @@ class TrackViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
             .into(image)
     }
 }
-class TrackAdapter(private val tracks: List<Track>, val onChoosedTrack : () -> Unit) : RecyclerView.Adapter<TrackViewHolder>() {
-    private val handler = Handler(Looper.getMainLooper())
-    private val chooseTrackRunnable = Runnable { onChoosedTrack.invoke() }
+class TrackAdapter(private val tracks: List<Track>, val onChoosedTrack : () -> Unit, val scope : CoroutineScope) : RecyclerView.Adapter<TrackViewHolder>() {
+    private var choosetrackJob: Job? = null
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TrackViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.track_view, parent, false)
         return TrackViewHolder(view)
@@ -58,9 +61,17 @@ class TrackAdapter(private val tracks: List<Track>, val onChoosedTrack : () -> U
     override fun getItemCount(): Int {
         return tracks.size
     }
+    private fun chooseTrack(){
+        onChoosedTrack.invoke()
+    }
+
     private fun chooseTrackDebounce() {
-        handler.removeCallbacks(chooseTrackRunnable)
-        handler.postDelayed(chooseTrackRunnable, CHOOSE_TRACK_DEBOUNCE_DELAY)
+        choosetrackJob?.cancel()
+
+        choosetrackJob = scope.launch {
+            delay(CHOOSE_TRACK_DEBOUNCE_DELAY)
+            chooseTrack()
+        }
     }
     companion object {
         private const val CHOOSE_TRACK_DEBOUNCE_DELAY = 500L
