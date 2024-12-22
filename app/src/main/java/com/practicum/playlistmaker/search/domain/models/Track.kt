@@ -10,7 +10,10 @@ data class Track(
     val artistName: String, // Имя исполнителя
     val trackTimeMillis: Long, // Продолжительность трека
     val artworkUrl100: String, // Ссылка на изображение обложки
-    val previewUrl: String
+    val previewUrl: String,
+
+    var isFavorite: Boolean = false
+
 ) {
     fun getCoverArtwork() = artworkUrl100.replaceAfterLast('/',"512x512bb.jpg")
     fun getReleaseYear() = releaseDate.substring(0,releaseDate.indexOf("-"))

@@ -17,9 +17,12 @@ import java.util.Locale
 
 class AudiopleerActivity : AppCompatActivity() {
     private lateinit var playButton: ImageButton
+    private lateinit var favoriteButton: ImageButton
     private lateinit var trackDurationTextView: TextView
 
     private lateinit var playButtonState: PlayButtonState
+
+
 
     private val viewModel by viewModel<AudioPleerViewModel>()
 
@@ -47,9 +50,10 @@ class AudiopleerActivity : AppCompatActivity() {
         val duration = findViewById<TextView>(R.id.durationValueTextView)
 
         playButton = findViewById<ImageButton>(R.id.play_button)
+        favoriteButton = findViewById<ImageButton>(R.id.favorite_button)
         trackDurationTextView = findViewById<TextView>(R.id.trackDurationTextView)
 
-        val radiusInPixels = getResources().getDimensionPixelSize(R.dimen.cover_image_radius)
+       val radiusInPixels = getResources().getDimensionPixelSize(R.dimen.cover_image_radius)
 
         Glide.with(this)
             .load(choosedTrack.getCoverArtwork())
@@ -80,6 +84,25 @@ class AudiopleerActivity : AppCompatActivity() {
                 PlayButtonState.PAUSE -> pausePlayer()
             }
         }
+
+
+
+        favoriteButton.setOnClickListener {
+
+            changeTrackFavoriteState()
+
+
+
+
+            /*when (playButtonState) {
+                PlayButtonState.PLAY -> startPlayer()
+                PlayButtonState.PAUSE -> pausePlayer()
+            }*/
+        }
+
+
+
+
     }
 
     private fun startPlayer() {
@@ -95,6 +118,21 @@ class AudiopleerActivity : AppCompatActivity() {
 
         viewModel.pausePlayer()
     }
+
+
+
+    private fun changeTrackFavoriteState(){
+
+        viewModel.changeTrackFavoriteState()
+
+
+    }
+
+
+
+
+
+
     override fun onPause() {
         super.onPause()
         pausePlayer()
@@ -115,6 +153,28 @@ class AudiopleerActivity : AppCompatActivity() {
             is AudioPlayerState.Playing -> trackDurationTextView.text = state.time
             is AudioPlayerState.Paused -> trackDurationTextView.text = state.time
         }
+
+
+        if(choosedTrack.isFavorite){
+
+            favoriteButton.setImageResource(R.drawable.ic_favorite_active_button)
+
+
+
+
+
+        }
+        else{
+
+            favoriteButton.setImageResource(R.drawable.ic_favorite_passive_button)
+
+        }
+
+
+
+
+
+
     }
     private enum class PlayButtonState {
         PLAY,

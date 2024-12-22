@@ -3,19 +3,31 @@ package com.practicum.playlistmaker.search.data.repository
 import android.content.SharedPreferences
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
+import com.practicum.playlistmaker.favorites.data.db.AppDatabase
 import com.practicum.playlistmaker.search.data.dto.TrackDto
 import com.practicum.playlistmaker.search.domain.models.Track
 import com.practicum.playlistmaker.search.domain.repository.SearchHistoryRepository
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 
-class SearchHistoryRepositoryImpl(private val sharedPrefs : SharedPreferences, private val gson : Gson) :
+class SearchHistoryRepositoryImpl(private val sharedPrefs : SharedPreferences, private val gson : Gson, private val appDatabase: AppDatabase) :
     SearchHistoryRepository {
     var tracks: MutableList<Track> = mutableListOf()
 
     init {
-        loadTracks()
+
+        GlobalScope.launch{
+
+               loadTracks()
+
+               }
     }
 
-    override fun loadTracks() {
+    override suspend fun loadTracks() {
+        val favoriteTracksIds = appDatabase.favoriteTrackDao().getTracksIds()
+
+
+
         val json = sharedPrefs.getString(SEARCH_HISTORY_KEY, null)
 
         if (json != null) {
@@ -27,6 +39,17 @@ class SearchHistoryRepositoryImpl(private val sharedPrefs : SharedPreferences, p
                     it.trackName, it.artistName, it.trackTimeMillis, it.artworkUrl100, it.previewUrl
                 )
             }
+
+
+            for(track in results) {
+
+
+                if (track.trackId in favoriteTracksIds)
+                    track.isFavorite = true
+
+
+            }
+
 
             tracks = results.toMutableList()
         } else
