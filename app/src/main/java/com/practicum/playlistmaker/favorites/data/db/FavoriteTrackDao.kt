@@ -8,11 +8,11 @@ import androidx.room.Query
 
 @Dao
 interface FavoriteTrackDao {
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    @Insert(entity = FavoriteTrackEntity::class,  onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertTrack(track: FavoriteTrackEntity)
 
-    @Delete
-    suspend fun deleteTrack(trackId: Int)
+    @Delete(entity = FavoriteTrackEntity::class)
+    suspend fun deleteTrack(track: FavoriteTrackEntity)
 
     @Query("SELECT * FROM track_table")
     suspend fun getTracks(): List<FavoriteTrackEntity>

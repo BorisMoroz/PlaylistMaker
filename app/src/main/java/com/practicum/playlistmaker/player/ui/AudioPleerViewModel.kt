@@ -1,13 +1,10 @@
 package com.practicum.playlistmaker.player.ui
 
 import android.icu.text.SimpleDateFormat
-import android.os.Handler
-import android.os.Looper
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.practicum.playlistmaker.creator.Creator
 import com.practicum.playlistmaker.favorites.domain.interactor.FavoriteTracksInteractor
 import com.practicum.playlistmaker.player.domain.interactor.AudioPlayerInteractor
 import com.practicum.playlistmaker.search.ui.choosedTrack
@@ -22,6 +19,8 @@ class AudioPleerViewModel(val audioPlayerInteractor : AudioPlayerInteractor, val
     private val audioPlayerState =
         MutableLiveData<AudioPlayerState>(AudioPlayerState.Default(formatTime(0)))
 
+    private var trackFavoriteState = MutableLiveData<Boolean>()
+
     init {
         preparePlayer(choosedTrack.previewUrl)
         setPlayBackCompleteCallBack {
@@ -31,9 +30,13 @@ class AudioPleerViewModel(val audioPlayerInteractor : AudioPlayerInteractor, val
 
     fun getAudioPlayerState(): LiveData<AudioPlayerState> = audioPlayerState
 
+    fun getTrackFavoriteState(): LiveData<Boolean> = trackFavoriteState
+
     fun preparePlayer(path: String) {
         audioPlayerInteractor.preparePlayer(path)
         audioPlayerState.value = AudioPlayerState.Prepared(formatTime(0))
+
+        trackFavoriteState.value = choosedTrack.isFavorite
     }
     fun startPlayer() {
         setTimerOn()
@@ -81,44 +84,20 @@ class AudioPleerViewModel(val audioPlayerInteractor : AudioPlayerInteractor, val
         audioPlayerInteractor.reset()
     }
 
-
     fun changeTrackFavoriteState(){
         if(!choosedTrack.isFavorite){
-
             viewModelScope.launch{favoriteTracksInteractor.addTrack(choosedTrack)}
-
-
-
-
-
         }
         else {
-
-            viewModelScope.launch{favoriteTracksInteractor.deleteTrack(choosedTrack.trackId)}
-
-
-
+            viewModelScope.launch{favoriteTracksInteractor.deleteTrack(choosedTrack)}
         }
 
         choosedTrack.isFavorite = !choosedTrack.isFavorite
 
-        audioPlayerState.value = audioPlayerState.value
-
-
+        trackFavoriteState.value = choosedTrack.isFavorite
     }
-
-
-
 
     companion object {
         private const val TIMER_STEP = 300L
     }
 }
-
-
-
-
-
-
-
-

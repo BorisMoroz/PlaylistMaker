@@ -14,9 +14,6 @@ class TracksRepositoryImpl(private val networkClient: NetworkClient, private val
     override fun searchTracks(expression: String): Flow<Resource<List<Track>>> = flow {
         val response = networkClient.doRequest(TracksSearchRequest(expression))
         if (response.resultCode == 200) {
-
-
-
             val favoriteTracksIds = appDatabase.favoriteTrackDao().getTracksIds()
 
             val tracks = (response as TracksSearchResponse).results.map {
@@ -25,24 +22,10 @@ class TracksRepositoryImpl(private val networkClient: NetworkClient, private val
             }
 
             for(track in tracks) {
-
-
                 if (track.trackId in favoriteTracksIds)
                     track.isFavorite = true
-
-
             }
-
-
             emit(Resource.Success(tracks))
-
-
-
-
-            /*emit(Resource.Success((response as TracksSearchResponse).results.map {
-                Track(it.trackId, it.collectionName, it.releaseDate, it.primaryGenreName, it.country,
-                    it.trackName, it.artistName, it.trackTimeMillis, it.artworkUrl100, it.previewUrl)
-            }))*/
         } else {
             emit(Resource.Error("Произошла сетевая ошибка"))
         }

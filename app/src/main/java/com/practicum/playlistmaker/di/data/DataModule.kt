@@ -35,14 +35,12 @@ val dataModule = module {
             .create(ITunesApi::class.java)
     }
 
-
     single {
 
         Room.databaseBuilder(androidContext(), AppDatabase::class.java, "database.db")
             .build()
 
     }
-
 
     factory { TrackDbConverter() }
 

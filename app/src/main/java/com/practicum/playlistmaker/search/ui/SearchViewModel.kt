@@ -20,8 +20,12 @@ class SearchViewModel(val searchTracksUseCase : SearchTracksUseCase, val searchH
 
     fun getState(): LiveData<SearchTracksState> = state
 
-    fun search(query: String, anyway: Boolean) {
-        if (query != lastQuery || anyway) {
+    fun resetLastQuery(){
+        lastQuery = ""
+    }
+
+    fun search(query: String) {
+        if (query != lastQuery) {
             lastQuery = query
 
             state.value = SearchTracksState.Loading

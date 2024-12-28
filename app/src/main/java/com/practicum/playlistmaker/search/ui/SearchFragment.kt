@@ -2,11 +2,8 @@ package com.practicum.playlistmaker.search.ui
 
 import android.content.Context
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.text.Editable
 import android.text.TextWatcher
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -18,6 +15,7 @@ import android.widget.LinearLayout
 import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.core.view.isVisible
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -61,7 +59,7 @@ class SearchFragment : Fragment() {
     private lateinit var inputMethod: InputMethodManager
 
     var tracks: ArrayList<Track> = arrayListOf()
-
+    var searchHistoryTracks: ArrayList<Track> = arrayListOf()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -104,7 +102,7 @@ class SearchFragment : Fragment() {
             LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
 
         trackAdapterSearchHistory =
-            TrackAdapter(viewModel.getSearchHistoryTracks(), onSearchHistoryChoosedTrack, viewLifecycleOwner.lifecycleScope)
+            TrackAdapter(searchHistoryTracks, onSearchHistoryChoosedTrack, viewLifecycleOwner.lifecycleScope)
 
         recyclerViewSearchHistory.adapter = trackAdapterSearchHistory
 
@@ -117,18 +115,21 @@ class SearchFragment : Fragment() {
         inputMethod = requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
 
         clearButton.setOnClickListener {
-            inputEditText.setText("")
-
             inputMethod.hideSoftInputFromWindow(inputEditText.windowToken, 0)
 
             tracks.clear()
 
             trackAdapter.notifyDataSetChanged()
+
+            resetLastQuery()
+
+            inputEditText.setText("")
         }
 
         buttonUpdate.setOnClickListener {
             hideMessage()
-            searchRequest(true)
+            resetLastQuery()
+            searchRequest()
         }
 
         val inputTextWatcher = object : TextWatcher {
@@ -152,11 +153,13 @@ class SearchFragment : Fragment() {
 
                     inputEditText.setShowSoftInputOnFocus(false)
 
+                    updateSearchHistoryTracks(viewModel.getSearchHistoryTracks())
                     showSearchHistory()
                 } else
                     inputEditText.setShowSoftInputOnFocus(true)
 
-                searchDebounceNew()
+                if(!s!!.isEmpty())
+                    searchDebounceNew()
             }
         }
 
@@ -166,6 +169,7 @@ class SearchFragment : Fragment() {
             if (hasFocus && (view as EditText).text.isEmpty() && !viewModel.isSearchHistoryEmpty()) {
                 (view as EditText).setShowSoftInputOnFocus(false)
 
+                updateSearchHistoryTracks(viewModel.getSearchHistoryTracks())
                 showSearchHistory()
             } else
                 (view as EditText).setShowSoftInputOnFocus(true)
@@ -229,12 +233,16 @@ class SearchFragment : Fragment() {
         }
     }
 
+    private fun updateSearchHistoryTracks(tracks: List<Track>){
+        searchHistoryTracks.clear()
+        searchHistoryTracks.addAll(tracks)
+        trackAdapterSearchHistory.notifyDataSetChanged()
+    }
+
     private fun showSearchHistory() {
         searchHistoryTitle.visibility = View.VISIBLE
         recyclerViewSearchHistory.visibility = View.VISIBLE
         buttonClearHistory.visibility = View.VISIBLE
-
-        trackAdapterSearchHistory.notifyDataSetChanged()
     }
 
     private fun hideSearchHistory() {
@@ -257,11 +265,15 @@ class SearchFragment : Fragment() {
         buttonUpdate.isVisible = false
     }
 
-    private fun searchRequest(anyway: Boolean) {
+    private fun resetLastQuery(){
+        viewModel.resetLastQuery()
+    }
+
+    private fun searchRequest() {
         val query = inputEditText.text.toString()
         if (query.isNotEmpty()) {
             inputMethod.hideSoftInputFromWindow(inputEditText.windowToken, 0)
-            viewModel.search(query, anyway)
+            viewModel.search(query)
         }
     }
 
@@ -269,7 +281,7 @@ class SearchFragment : Fragment() {
         searchJob?.cancel()
         searchJob = viewLifecycleOwner.lifecycleScope.launch {
             delay(SEARCH_DEBOUNCE_DELAY)
-            searchRequest(false)
+            searchRequest()
         }
     }
 

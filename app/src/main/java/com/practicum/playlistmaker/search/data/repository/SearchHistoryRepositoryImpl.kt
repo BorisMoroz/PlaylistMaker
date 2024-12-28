@@ -9,24 +9,20 @@ import com.practicum.playlistmaker.search.domain.models.Track
 import com.practicum.playlistmaker.search.domain.repository.SearchHistoryRepository
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 
 class SearchHistoryRepositoryImpl(private val sharedPrefs : SharedPreferences, private val gson : Gson, private val appDatabase: AppDatabase) :
     SearchHistoryRepository {
     var tracks: MutableList<Track> = mutableListOf()
 
     init {
-
         GlobalScope.launch{
-
-               loadTracks()
-
-               }
+            loadTracks()
+            }
     }
 
     override suspend fun loadTracks() {
         val favoriteTracksIds = appDatabase.favoriteTrackDao().getTracksIds()
-
-
 
         val json = sharedPrefs.getString(SEARCH_HISTORY_KEY, null)
 
@@ -40,16 +36,10 @@ class SearchHistoryRepositoryImpl(private val sharedPrefs : SharedPreferences, p
                 )
             }
 
-
             for(track in results) {
-
-
                 if (track.trackId in favoriteTracksIds)
                     track.isFavorite = true
-
-
             }
-
 
             tracks = results.toMutableList()
         } else

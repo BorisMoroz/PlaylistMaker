@@ -25,14 +25,10 @@ class RootActivity : AppCompatActivity() {
         val bottomNavigationView = findViewById<BottomNavigationView>(R.id.bottomNavigationView)
         bottomNavigationView.setupWithNavController(navController)
 
-
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.bottomNavigationView)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(systemBars.left, 0, systemBars.right,0)
             insets
         }
-
-
-
     }
 }

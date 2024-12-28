@@ -22,8 +22,6 @@ class AudiopleerActivity : AppCompatActivity() {
 
     private lateinit var playButtonState: PlayButtonState
 
-
-
     private val viewModel by viewModel<AudioPleerViewModel>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -32,6 +30,10 @@ class AudiopleerActivity : AppCompatActivity() {
 
         viewModel.getAudioPlayerState().observe(this) { state ->
             renderState(state)
+        }
+
+        viewModel.getTrackFavoriteState().observe(this) { state ->
+            renderFavoriteButtonState(state)
         }
 
         val backArrow = findViewById<ImageButton>(R.id.back_arrow)
@@ -85,24 +87,9 @@ class AudiopleerActivity : AppCompatActivity() {
             }
         }
 
-
-
         favoriteButton.setOnClickListener {
-
             changeTrackFavoriteState()
-
-
-
-
-            /*when (playButtonState) {
-                PlayButtonState.PLAY -> startPlayer()
-                PlayButtonState.PAUSE -> pausePlayer()
-            }*/
         }
-
-
-
-
     }
 
     private fun startPlayer() {
@@ -119,19 +106,9 @@ class AudiopleerActivity : AppCompatActivity() {
         viewModel.pausePlayer()
     }
 
-
-
     private fun changeTrackFavoriteState(){
-
         viewModel.changeTrackFavoriteState()
-
-
     }
-
-
-
-
-
 
     override fun onPause() {
         super.onPause()
@@ -153,29 +130,15 @@ class AudiopleerActivity : AppCompatActivity() {
             is AudioPlayerState.Playing -> trackDurationTextView.text = state.time
             is AudioPlayerState.Paused -> trackDurationTextView.text = state.time
         }
-
-
-        if(choosedTrack.isFavorite){
-
-            favoriteButton.setImageResource(R.drawable.ic_favorite_active_button)
-
-
-
-
-
-        }
-        else{
-
-            favoriteButton.setImageResource(R.drawable.ic_favorite_passive_button)
-
-        }
-
-
-
-
-
-
     }
+
+    private fun renderFavoriteButtonState(state: Boolean){
+        when (state){
+            true -> favoriteButton.setImageResource(R.drawable.ic_favorite_active_button)
+            false -> favoriteButton.setImageResource(R.drawable.ic_favorite_passive_button)
+        }
+    }
+
     private enum class PlayButtonState {
         PLAY,
         PAUSE
