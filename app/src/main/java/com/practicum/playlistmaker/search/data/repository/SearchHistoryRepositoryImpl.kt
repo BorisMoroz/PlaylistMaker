@@ -16,14 +16,10 @@ class SearchHistoryRepositoryImpl(private val sharedPrefs : SharedPreferences, p
     var tracks: MutableList<Track> = mutableListOf()
 
     init {
-        GlobalScope.launch{
-            loadTracks()
-            }
+        loadTracks()
     }
 
-    override suspend fun loadTracks() {
-        val favoriteTracksIds = appDatabase.favoriteTrackDao().getTracksIds()
-
+    override fun loadTracks() {
         val json = sharedPrefs.getString(SEARCH_HISTORY_KEY, null)
 
         if (json != null) {
@@ -35,12 +31,6 @@ class SearchHistoryRepositoryImpl(private val sharedPrefs : SharedPreferences, p
                     it.trackName, it.artistName, it.trackTimeMillis, it.artworkUrl100, it.previewUrl
                 )
             }
-
-            for(track in results) {
-                if (track.trackId in favoriteTracksIds)
-                    track.isFavorite = true
-            }
-
             tracks = results.toMutableList()
         } else
             tracks = mutableListOf()
@@ -61,7 +51,14 @@ class SearchHistoryRepositoryImpl(private val sharedPrefs : SharedPreferences, p
             .apply()
     }
 
-    override fun getSearchHistoryTracks(): List<Track> {
+    override suspend fun getSearchHistoryTracks(): List<Track> {
+        val favoriteTracksIds = appDatabase.favoriteTrackDao().getTracksIds()
+
+        for(track in tracks) {
+            track.isFavorite = false
+            if (track.trackId in favoriteTracksIds)
+                track.isFavorite = true
+        }
         return tracks
     }
 

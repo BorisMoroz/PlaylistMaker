@@ -90,7 +90,7 @@ class SearchFragment : Fragment() {
         searchHistoryTitle = binding.searchHistoryTitle
         buttonClearHistory = binding.buttonClearHistory
 
-        recyclerViewSearchResult = binding.trackList//findViewById<RecyclerView>(R.id.trackList)
+        recyclerViewSearchResult = binding.trackList
         recyclerViewSearchResult.layoutManager =
             LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
 
@@ -302,6 +302,7 @@ class SearchFragment : Fragment() {
 
     private fun showTracks(data: List<Track>) {
         searchProgressBar.visibility = View.INVISIBLE
+
         tracks.clear()
         tracks.addAll(data)
         trackAdapter.notifyDataSetChanged()

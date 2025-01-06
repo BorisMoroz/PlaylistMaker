@@ -12,9 +12,10 @@ import com.practicum.playlistmaker.search.domain.models.Resource
 import com.practicum.playlistmaker.search.domain.models.Track
 import com.practicum.playlistmaker.search.domain.use_case.SearchTracksUseCase
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 
 class SearchViewModel(val searchTracksUseCase : SearchTracksUseCase, val searchHistoryInteractor : SearchHistoryInteractor) : ViewModel() {
-    private val state = MutableLiveData<SearchTracksState>()
+    private var state = MutableLiveData<SearchTracksState>()
 
     private var lastQuery: String = ""
 
@@ -50,7 +51,10 @@ class SearchViewModel(val searchTracksUseCase : SearchTracksUseCase, val searchH
     }
 
     fun getSearchHistoryTracks(): List<Track> {
-        return searchHistoryInteractor.getSearchHistoryTracks()
+        var tracks: List<Track> = emptyList()
+
+        runBlocking { tracks = searchHistoryInteractor.getSearchHistoryTracks() }
+        return tracks
     }
 
     fun addSearchHistoryTrack(newTrack: Track) {

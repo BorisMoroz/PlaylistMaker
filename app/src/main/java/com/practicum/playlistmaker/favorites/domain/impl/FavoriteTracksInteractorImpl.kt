@@ -16,6 +16,6 @@ class FavoriteTracksInteractorImpl(private val favoriteTracksRepository: Favorit
     }
 
     override suspend fun getTracks(): Flow<List<Track>>{
-        return favoriteTracksRepository.getTracks().map{tracks -> tracks.reversed()}
+        return favoriteTracksRepository.getTracks()
     }
 }
