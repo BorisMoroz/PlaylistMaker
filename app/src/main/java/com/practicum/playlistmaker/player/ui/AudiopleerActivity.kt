@@ -17,6 +17,7 @@ import java.util.Locale
 
 class AudiopleerActivity : AppCompatActivity() {
     private lateinit var playButton: ImageButton
+    private lateinit var favoriteButton: ImageButton
     private lateinit var trackDurationTextView: TextView
 
     private lateinit var playButtonState: PlayButtonState
@@ -29,6 +30,10 @@ class AudiopleerActivity : AppCompatActivity() {
 
         viewModel.getAudioPlayerState().observe(this) { state ->
             renderState(state)
+        }
+
+        viewModel.getTrackFavoriteState().observe(this) { state ->
+            renderFavoriteButtonState(state)
         }
 
         val backArrow = findViewById<ImageButton>(R.id.back_arrow)
@@ -47,9 +52,10 @@ class AudiopleerActivity : AppCompatActivity() {
         val duration = findViewById<TextView>(R.id.durationValueTextView)
 
         playButton = findViewById<ImageButton>(R.id.play_button)
+        favoriteButton = findViewById<ImageButton>(R.id.favorite_button)
         trackDurationTextView = findViewById<TextView>(R.id.trackDurationTextView)
 
-        val radiusInPixels = getResources().getDimensionPixelSize(R.dimen.cover_image_radius)
+       val radiusInPixels = getResources().getDimensionPixelSize(R.dimen.cover_image_radius)
 
         Glide.with(this)
             .load(choosedTrack.getCoverArtwork())
@@ -80,6 +86,10 @@ class AudiopleerActivity : AppCompatActivity() {
                 PlayButtonState.PAUSE -> pausePlayer()
             }
         }
+
+        favoriteButton.setOnClickListener {
+            changeTrackFavoriteState()
+        }
     }
 
     private fun startPlayer() {
@@ -95,6 +105,11 @@ class AudiopleerActivity : AppCompatActivity() {
 
         viewModel.pausePlayer()
     }
+
+    private fun changeTrackFavoriteState(){
+        viewModel.changeTrackFavoriteState()
+    }
+
     override fun onPause() {
         super.onPause()
         pausePlayer()
@@ -116,6 +131,14 @@ class AudiopleerActivity : AppCompatActivity() {
             is AudioPlayerState.Paused -> trackDurationTextView.text = state.time
         }
     }
+
+    private fun renderFavoriteButtonState(state: Boolean){
+        when (state){
+            true -> favoriteButton.setImageResource(R.drawable.ic_favorite_active_button)
+            false -> favoriteButton.setImageResource(R.drawable.ic_favorite_passive_button)
+        }
+    }
+
     private enum class PlayButtonState {
         PLAY,
         PAUSE

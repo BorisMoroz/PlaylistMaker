@@ -2,7 +2,11 @@ package com.practicum.playlistmaker.di.data
 
 import android.content.Context
 import android.media.MediaPlayer
+import androidx.room.Room
 import com.google.gson.Gson
+import com.practicum.playlistmaker.favorites.data.converters.TrackDbConverter
+import com.practicum.playlistmaker.favorites.data.db.AppDatabase
+
 import com.practicum.playlistmaker.player.data.repository.AudioPlayerRepositoryImpl
 import com.practicum.playlistmaker.player.domain.repository.AudioPlayerRepository
 import com.practicum.playlistmaker.search.data.network.ITunesApi
@@ -31,6 +35,13 @@ val dataModule = module {
             .build()
             .create(ITunesApi::class.java)
     }
+
+    single {
+        Room.databaseBuilder(androidContext(), AppDatabase::class.java, "playlistmaker_database_new.db")
+            .build()
+    }
+
+    factory { TrackDbConverter() }
 
     single {
         androidContext().getSharedPreferences(PLAYLISTMAKER_PREFERENCES, Context.MODE_PRIVATE)

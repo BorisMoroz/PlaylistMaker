@@ -187,7 +187,7 @@
         app:layout_constraintEnd_toStartOf="@id/right_guideline_2"
         app:layout_constraintTop_toTopOf="@id/play_button"
 
-        app:srcCompat="@drawable/ic_favorite_button" />
+        app:srcCompat="@drawable/ic_favorite_passive_button" />
 
     <TextView
         android:id="@+id/artistTextView"

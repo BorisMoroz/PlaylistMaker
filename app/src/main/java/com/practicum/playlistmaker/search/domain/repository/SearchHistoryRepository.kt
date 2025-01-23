@@ -5,7 +5,7 @@ import com.practicum.playlistmaker.search.domain.models.Track
 interface SearchHistoryRepository {
     fun loadTracks()
     fun saveTracks()
-    fun getSearchHistoryTracks() : List<Track>
+    suspend fun getSearchHistoryTracks() : List<Track>
     fun addTrack(newTrack : Track)
     fun clear()
     fun isEmpty() : Boolean

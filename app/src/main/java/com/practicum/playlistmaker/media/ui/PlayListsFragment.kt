@@ -9,7 +9,7 @@ import com.practicum.playlistmaker.databinding.FragmentPlayListsBinding
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class PlayListsFragment : Fragment() {
-    private val viewModel by viewModel<PlayListsFragmentViewModel>()
+    private val viewModel by viewModel<PlayListsViewModel>()
 
     private lateinit var binding: FragmentPlayListsBinding
 
