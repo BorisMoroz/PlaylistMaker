@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-
     <!-- styles for activity_main -->
 
     <style name="MainActivityLayoutColorStyle">
@@ -157,6 +156,52 @@
         <item name="android:layout_width">@dimen/small_buttons_width</item>
         <item name="android:layout_height">@dimen/small_buttons_height</item>
         <item name="android:background">@null</item>
+    </style>
+
+    <!-- styles for fragment_create_playlist -->
+
+    <style name="CreatePlaylistFragmentEditTextStyle">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">match_parent</item>
+
+        <item name="android:inputType">text</item>
+        <item name="android:maxLines">1</item>
+        <item name="android:singleLine">true</item>
+
+        <item name="android:textColor">@color/create_playlist_edittext_text_color</item>
+
+        <item name="android:fontFamily">@font/ys_display_regular</item>
+        <item name="android:textFontWeight">400</item>
+        <item name="android:textSize">16sp</item>
+
+        <item name="android:textCursorDrawable">@null</item>
+    </style>
+
+    <style name="CreatePlaylistFragmentTextInputLayoutStyle">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">56dp</item>
+
+        <item name="android:layout_marginHorizontal">16dp</item>
+
+        <item name="boxStrokeColor">@color/playlist_edittext_color_selector</item>
+        <item name="hintTextColor">@color/playlist_edittext_color_selector</item>
+        <item name="android:textColorHint">@color/create_playlist_edittext_text_color</item>
+    </style>
+
+    <!-- styles for playlist_view -->
+
+    <style name="PlaylistViewLineStyle">
+
+        <item name="android:layout_width">@dimen/playlistview_line_width</item>
+        <item name="android:layout_height">@dimen/playlistview_line_height</item>
+
+        <item name="android:textColor">@color/playlist_view_line_color</item>
+        <item name="android:fontFamily">@font/ys_display_regular</item>
+        <item name="android:textFontWeight">400</item>
+        <item name="android:textSize">@dimen/playlistview_line_text_size</item>
+
+        <item name="android:maxLines">1</item>
+        <item name="android:singleLine">true</item>
     </style>
 </resources>
 

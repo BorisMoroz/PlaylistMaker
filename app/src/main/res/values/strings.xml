@@ -57,6 +57,9 @@
     <string name="favorites_button_description">Избранное</string>
     <string name="arrow_back_button_description">Назад</string>
 
+    <string name="add_track_to_playlist_phrase_1">Трек уже добавлен в плейлист</string>
+    <string name="add_track_to_playlist_phrase_2">Добавлено в плейлист</string>
+
     <!-- strings for media -->
 
     <string name="media_screen_title">Медиатека</string>
@@ -75,4 +78,33 @@
     <string name="bottomnavigation_menu_search_title">Поиск</string>
     <string name="bottomnavigation_menu_media_title">Медиатека</string>
     <string name="bottomnavigation_menu_settings_title">Настройки</string>
+
+    <!-- strings for newplaylist -->
+
+    <string name="create_playlist_screen_title">Новый плейлист</string>
+    <string name="create_playlist_name_edittext_title">Название*</string>
+    <string name="create_playlist_description_edittext_title">Описание</string>
+
+    <string name="create_playlist_button_text">Создать</string>
+
+    <string name="create_playlist_backpressed_dialog_title">Завершить создание плейлиста?</string>
+    <string name="create_playlist_backpressed_dialog_message">Все несохраненные данные будут потеряны</string>
+    <string name="create_playlist_backpressed_dialog_cancel_button">Отмена</string>
+    <string name="create_playlist_backpressed_dialog_yes_button">Да</string>
+
+    <string name="create_playlist_toast_phrase_first_part">Плейлист</string>
+    <string name="create_playlist_toast_phrase_second_part">создан</string>
+    <string name="custom_toast_check_value">Это мой личный тост</string>
+
+    <!-- strings for player_bottomsheet -->
+
+    <string name="player_bottomsheet_title">Добавить в плейлист</string>
+
+    <!-- strings for playlist_view -->
+
+    <string name="playlist_title_check_value">Best songs 2021</string>
+    <string name="playlist_tracksnumber_check_value">98 треков</string>
+    <string name="playlist_tracks_number_root">трек</string>
+    <string name="playlist_tracks_number_ending_1">а</string>
+    <string name="playlist_tracks_number_ending_2">ов</string>
 </resources>

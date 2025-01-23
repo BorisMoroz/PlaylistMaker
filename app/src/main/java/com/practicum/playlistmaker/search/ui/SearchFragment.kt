@@ -196,12 +196,11 @@ class SearchFragment : Fragment() {
 
     val onSearchResultChoosedTrack: () -> Unit = {
         viewModel.addSearchHistoryTrack(choosedTrack)
-
-        findNavController().navigate(R.id.action_searchFragment_to_audiopleerActivity)
+        findNavController().navigate(R.id.action_searchFragment_to_audioPleerFragment2)
     }
 
     val onSearchHistoryChoosedTrack: () -> Unit = {
-        findNavController().navigate(R.id.action_searchFragment_to_audiopleerActivity)
+        findNavController().navigate(R.id.action_searchFragment_to_audioPleerFragment2)
     }
 
     private fun clearButtonVisibility(s: CharSequence?): Boolean {

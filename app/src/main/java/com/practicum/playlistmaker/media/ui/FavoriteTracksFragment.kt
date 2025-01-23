@@ -52,7 +52,7 @@ class FavoriteTracksFragment : Fragment() {
     }
 
     val onChoosedTrack: () -> Unit = {
-        findNavController().navigate(R.id.action_mediaFragment_to_audiopleerActivity)
+        findNavController().navigate(R.id.action_mediaFragment_to_audioPleerFragment2)
     }
 
     fun showNothingMessage(){
