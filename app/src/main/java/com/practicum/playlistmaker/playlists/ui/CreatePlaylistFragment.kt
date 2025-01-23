@@ -114,7 +114,7 @@ class CreatePlaylistFragment : Fragment() {
         binding.playlistNameEditText.addTextChangedListener(inputNameTextWatcher)
 
         val pickMedia = registerForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
-            playlistImageUri = uri
+                playlistImageUri = uri
 
                 if (playlistImageUri != null) {
 
