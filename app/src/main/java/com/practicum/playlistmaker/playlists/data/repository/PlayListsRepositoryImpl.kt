@@ -29,10 +29,7 @@ class PlayListsRepositoryImpl(
     private val appDatabase: AppDatabase,
     private val playlistDbConverter: PlaylistDbConverter,
     private val playlistsTrackDbConverter: PlaylistsTrackDbConverter,
-
     private val context: Context
-
-
 ) : PlaylistsRepository {
     override suspend fun addPlaylist(playlist: Playlist) {
         playlist.id = 0
@@ -49,156 +46,45 @@ class PlayListsRepositoryImpl(
     }
 
     override suspend fun addTrackToPlayList(track: Track, playlist: Playlist) {
-
-
-        //playlist.tracksIds.add(track.trackId)
-
-
         playlist.tracksIds.add(0, track.trackId)
-
-
-
         playlist.tracksNum++
 
         val recs = appDatabase.playlistDao().updatePlaylist(playlistDbConverter.map(playlist))
-
         appDatabase.playlistsTrackDao().insertPlaylistsTrack(playlistsTrackDbConverter.map(track))
     }
 
-
-
-
-
-    override suspend fun deletePlaylist(playlist: Playlist?){
-
-       // var tracks: List<Track> = emptyList()
-
-
-
-
+    override suspend fun deletePlaylist(playlist: Playlist?) {
         var tracks: MutableList<PlaylistsTrackEntity> = mutableListOf()
-
 
         val allTracks = appDatabase.playlistsTrackDao().getAllTracks()
 
-
         for (trackId in playlist!!.tracksIds) {
-
             for (track in allTracks) {
-
                 if (trackId == track.trackId) {
-
-
                     tracks.add(track)
-
-
                     break
-
                 }
-
             }
-
         }
-
-
-
-
-
-
-     /*  GlobalScope.launch {
-
-           getPlaylistTracks(playlist)
-               //.collect{ result -> tracks = result }
-               .collect { result ->
-                   removeTracksFromPlayListsTracks(result)
-                   appDatabase.playlistDao().deletePlaylist(playlistDbConverter.map(playlist))
-
-
-               }
-
-       } */
-
-
-
-
-        //val tracksMapped = tracks.map { track -> playlistsTrackDbConverter.map(track) }
-
-
         appDatabase.playlistDao().deletePlaylist(playlistDbConverter.map(playlist))
 
-
         removeTracksFromPlayListsTracks(tracks.map { track -> playlistsTrackDbConverter.map(track) })
-
-
-
-
-
-
-
-        /*val allTracks = appDatabase.playlistsTrackDao().getAllTracks()
-
-        for (trackId in playlist.tracksIds) {
-
-            for (track in allTracks) {
-
-                if (trackId == track.trackId) {
-
-
-                    removeTrackFromPlayListsTracks(playlistsTrackDbConverter.map(track))
-
-
-                    break
-
-                }
-
-            }
-
-        }*/
-
-
-
-
-        //appDatabase.playlistDao().deletePlaylist(playlistDbConverter.map(playlist))
-
-
-
-
     }
 
-
-
     override suspend fun getPlaylistTracks(playlist: Playlist?): Flow<List<Track>> = flow {
-
-
         var tracks: MutableList<PlaylistsTrackEntity> = mutableListOf()
-
 
         val allTracks = appDatabase.playlistsTrackDao().getAllTracks()
 
-
         for (trackId in playlist!!.tracksIds) {
-
             for (track in allTracks) {
-
                 if (trackId == track.trackId) {
-
-
                     tracks.add(track)
-
-
                     break
-
                 }
-
             }
-
         }
-
-
-
         val tracksMapped = tracks.map { track -> playlistsTrackDbConverter.map(track) }
-
-
 
         val favoriteTracksIds = appDatabase.favoriteTrackDao().getTracksIds()
 
@@ -207,22 +93,10 @@ class PlayListsRepositoryImpl(
             if (track.trackId in favoriteTracksIds)
                 track.isFavorite = true
         }
-
         emit(tracksMapped)
-
     }
 
-
-
-
-
-
-
-
-
-
     override suspend fun removeTrackFromPlayList(track: Track, playlist: Playlist?) {
-
         val tracks = listOf(track)
 
         playlist!!.tracksIds.remove(track.trackId)
@@ -230,98 +104,30 @@ class PlayListsRepositoryImpl(
 
         val recs = appDatabase.playlistDao().updatePlaylist(playlistDbConverter.map(playlist))
 
-
         removeTracksFromPlayListsTracks(tracks)
-
-
-        //removeTrackFromPlayListsTracks(track)
-
-
     }
 
-
-
-
-
     suspend fun removeTracksFromPlayListsTracks(tracks: List<Track>) {
-
         var playlistFound = false
-
 
         val playlists = appDatabase.playlistDao().getPlaylists()
             .map { playlist -> playlistDbConverter.map(playlist) }
 
-
-        for(track in tracks) {
-
+        for (track in tracks) {
             for (playlist in playlists) {
-
-
                 if (track.trackId in playlist.tracksIds) {
-
-
                     playlistFound = true
-
                     break
-
                 }
-
             }
-
             if (!playlistFound) {
-
-
                 appDatabase.playlistsTrackDao()
                     .deletePlaylistsTrack(playlistsTrackDbConverter.map(track))
 
-
                 playlistFound = false
-
             }
-
         }
     }
-
-
-    /*suspend fun removeTrackFromPlayListsTracks(track: Track) {
-
-        var playlistFound = false
-
-
-        val playlists = appDatabase.playlistDao().getPlaylists()
-            .map { playlist -> playlistDbConverter.map(playlist) }
-
-        for (playlist in playlists) {
-
-            if (track.trackId in playlist.tracksIds) {
-
-
-                playlistFound = true
-
-                break
-
-            }
-
-
-        }
-
-
-        if (!playlistFound) {
-
-
-            appDatabase.playlistsTrackDao()
-                .deletePlaylistsTrack(playlistsTrackDbConverter.map(track))
-
-
-        }
-
-
-    }*/
-
-
-
-
-
 
     @SuppressLint("Range")
     private fun getFileNameFromUri(context: Context, uri: Uri): String? {
@@ -333,16 +139,16 @@ class PlayListsRepositoryImpl(
         return fileName
     }
 
-
-    override suspend fun saveImageToPrivateStorage(uri: Uri) : String{
+    override suspend fun saveImageToPrivateStorage(uri: Uri): String {
         //создаём экземпляр класса File, который указывает на нужный каталог
-        val filePath = File(context.getExternalFilesDir(Environment.DIRECTORY_PICTURES), "playlistsimages")
+        val filePath =
+            File(context.getExternalFilesDir(Environment.DIRECTORY_PICTURES), "playlistsimages")
         //создаем каталог, если он не создан
-        if (!filePath.exists()){
+        if (!filePath.exists()) {
             filePath.mkdirs()
         }
 
-        val fileName = getFileNameFromUri(context,uri)
+        val fileName = getFileNameFromUri(context, uri)
 
         val file = File(filePath, fileName)
         val inputStream = context.contentResolver.openInputStream(uri)
@@ -353,10 +159,4 @@ class PlayListsRepositoryImpl(
 
         return file.getAbsolutePath()
     }
-
-
-
-
-
-
 }

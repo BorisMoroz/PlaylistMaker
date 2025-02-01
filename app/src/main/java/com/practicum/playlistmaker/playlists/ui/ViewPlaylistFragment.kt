@@ -93,11 +93,11 @@ class ViewPlaylistFragment : Fragment() {
             override fun onStateChanged(bottomSheet: View, newState: Int) {
                 when (newState) {
                     BottomSheetBehavior.STATE_HIDDEN -> {
-                        binding.overlay.visibility = View.GONE
+                        binding.overlay.isVisible = false
                     }
 
                     else -> {
-                        binding.overlay.visibility = View.VISIBLE
+                        binding.overlay.isVisible = true
                     }
                 }
             }
@@ -245,6 +245,10 @@ class ViewPlaylistFragment : Fragment() {
                 )
 
                 binding.duration.text = sumDurationPlural + " • " + tracksNumberPlural
+
+                binding.noTracksMessage.isVisible = false
+                recyclerViewPlaylistTracks.isVisible = true
+
                 showTracks(state.data)
             }
 
@@ -255,6 +259,9 @@ class ViewPlaylistFragment : Fragment() {
                     this.getResources().getQuantityString(R.plurals.plurals_for_tracks, 0, 0)
                 binding.duration.text = sumDurationPlural + " • " + tracksNumberPlural
                 clearTracks()
+
+                binding.noTracksMessage.isVisible = true
+                recyclerViewPlaylistTracks.isVisible = false
             }
         }
     }

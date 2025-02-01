@@ -145,6 +145,8 @@
     <string name="dialog_negative_button">НЕТ</string>
     <string name="dialog_neutral_button">ОТМЕНА</string>
 
+    <string name="no_tracks_message">В этом плейлисте нет треков</string>
+
     <!-- strings for fragment_edit_playlist -->
 
     <string name="edit_playlist_title">Редактировать</string>
