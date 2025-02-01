@@ -191,7 +191,6 @@
     <!-- styles for playlist_view -->
 
     <style name="PlaylistViewLineStyle">
-
         <item name="android:layout_width">@dimen/playlistview_line_width</item>
         <item name="android:layout_height">@dimen/playlistview_line_height</item>
 
@@ -202,6 +201,39 @@
 
         <item name="android:maxLines">1</item>
         <item name="android:singleLine">true</item>
+    </style>
+
+    <!-- styles for fragment_view_playlist -->
+
+    <style name="ButtonsStyle">
+        <item name="android:layout_width">24dp</item>
+        <item name="android:layout_height">24dp</item>
+        <item name="android:layout_gravity">center</item>
+        <item name="android:background">@null</item>
+    </style>
+
+    <style name="menuItemStyle">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">61dp</item>
+        <item name="android:gravity">center_vertical</item>
+        <item name="android:paddingLeft">13dp</item>
+        <item name="android:maxLines">1</item>
+        <item name="android:singleLine">true</item>
+
+        <item name="android:textColor">@color/menu_item_color</item>
+        <item name="android:fontFamily">@font/ys_display_regular</item>
+        <item name="android:textFontWeight">400</item>
+        <item name="android:textSize">16sp</item>
+
+        <item name="android:clickable">true</item>
+    </style>
+
+    <!-- styles for dialogs -->
+
+    <style name="AppCompatAlertDialogStyle" parent="Theme.AppCompat.Light.Dialog.Alert">
+        <item name="colorAccent">#3772E7</item>
+        <item name="android:textColor">#1A1B22</item>
+        <item name="android:background">#FFFFFF</item>
     </style>
 </resources>
 

@@ -37,11 +37,15 @@ class RootActivity : AppCompatActivity() {
                 R.id.createPlaylistFragment -> {
                     binding.bottomNavigationView.visibility = View.GONE
                 }
-
                 R.id.audioPleerFragment2 -> {
                     binding.bottomNavigationView.visibility = View.GONE
                 }
-
+                R.id.viewPlaylistFragment  -> {
+                    binding.bottomNavigationView.visibility = View.GONE
+                }
+                R.id.editPlaylistFragment  -> {
+                    binding.bottomNavigationView.visibility = View.GONE
+                }
                 else -> {
                     binding.bottomNavigationView.visibility = View.VISIBLE
                 }

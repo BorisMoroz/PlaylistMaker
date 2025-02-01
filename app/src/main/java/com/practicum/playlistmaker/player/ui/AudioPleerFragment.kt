@@ -252,12 +252,12 @@ class AudioPleerFragment : Fragment() {
 
         when (state){
             true -> {
-                toast_message.text = "${getString(R.string.add_track_to_playlist_phrase_1)} [${choosedPlaylist.title}]"
+                toast_message.text = "${getString(R.string.add_track_to_playlist_phrase_1)} [${choosedPlaylist!!.title}]"
             }
             false -> {
                 bottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
 
-                toast_message.text = "${getString(R.string.add_track_to_playlist_phrase_2)} [${choosedPlaylist.title}]"
+                toast_message.text = "${getString(R.string.add_track_to_playlist_phrase_2)} [${choosedPlaylist!!.title}]"
             }
         }
 

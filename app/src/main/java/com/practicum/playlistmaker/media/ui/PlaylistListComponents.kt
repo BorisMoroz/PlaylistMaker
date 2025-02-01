@@ -13,8 +13,8 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.load.resource.bitmap.CenterCrop
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.practicum.playlistmaker.R
+import com.practicum.playlistmaker.player.ui.choosedPlaylist
 import com.practicum.playlistmaker.playlists.domain.models.Playlist
-
 class PlaylistViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
     private val playlistName: TextView = itemView.findViewById(R.id.playlistName)
     private val playlistTracksNum: TextView = itemView.findViewById(R.id.playlistTracksNum)
@@ -41,14 +41,18 @@ class PlaylistViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
     }
 }
 
-class PlaylistAdapter(private val playlists: List<Playlist>) : RecyclerView.Adapter<PlaylistViewHolder>() {
-
+class PlaylistAdapter(private val playlists: List<Playlist>,  val onChoosedPlaylist : () -> Unit) : RecyclerView.Adapter<PlaylistViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PlaylistViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.playlist_view, parent, false)
         return PlaylistViewHolder(view)
     }
     override fun onBindViewHolder(holder: PlaylistViewHolder, position: Int) {
         holder.bind(playlists[position])
+
+        holder.itemView.setOnClickListener {
+            choosedPlaylist = playlists[position]
+            onChoosedPlaylist.invoke()
+        }
     }
     override fun getItemCount(): Int {
         return playlists.size

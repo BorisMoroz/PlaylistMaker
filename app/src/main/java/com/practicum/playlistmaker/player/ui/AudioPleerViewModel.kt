@@ -123,8 +123,8 @@ class AudioPleerViewModel(val audioPlayerInteractor : AudioPlayerInteractor, val
         }
     }
 
-    fun addTrackToPlaylist(track : Track, playlist : Playlist){
-        if(track.trackId in playlist.tracksIds){
+    fun addTrackToPlaylist(track : Track, playlist : Playlist?){
+        if(track.trackId in playlist!!.tracksIds){
           trackInPlaylistState.postValue(true)
         }
         else{

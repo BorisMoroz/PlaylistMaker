@@ -44,7 +44,7 @@ class TrackViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
             .into(image)
     }
 }
-class TrackAdapter(private val tracks: List<Track>, val onChoosedTrack : () -> Unit, val scope : CoroutineScope) : RecyclerView.Adapter<TrackViewHolder>() {
+class TrackAdapter(private val tracks: List<Track>, val onChoosedTrack : () -> Unit, val onChoosedTrackLong : () -> Unit, val scope : CoroutineScope) : RecyclerView.Adapter<TrackViewHolder>() {
     private var choosetrackJob: Job? = null
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TrackViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.track_view, parent, false)
@@ -56,6 +56,14 @@ class TrackAdapter(private val tracks: List<Track>, val onChoosedTrack : () -> U
         holder.itemView.setOnClickListener {
             choosedTrack = tracks[position]
             chooseTrackDebounce()
+        }
+
+        holder.itemView.setOnLongClickListener {
+            choosedTrack = tracks[position]
+
+            onChoosedTrackLong.invoke()
+
+            return@setOnLongClickListener true
         }
     }
     override fun getItemCount(): Int {

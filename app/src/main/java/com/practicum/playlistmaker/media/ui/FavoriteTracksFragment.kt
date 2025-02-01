@@ -37,7 +37,7 @@ class FavoriteTracksFragment : Fragment() {
         recyclerViewFavoriteTracks.layoutManager =
             LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
 
-        trackAdapter = TrackAdapter(tracks, onChoosedTrack, viewLifecycleOwner.lifecycleScope)
+        trackAdapter = TrackAdapter(tracks, onChoosedTrack, onChoosedTrackLong, viewLifecycleOwner.lifecycleScope)
         recyclerViewFavoriteTracks.adapter = trackAdapter
 
         viewModel.getState().observe(viewLifecycleOwner) { state ->
@@ -55,6 +55,9 @@ class FavoriteTracksFragment : Fragment() {
         findNavController().navigate(R.id.action_mediaFragment_to_audioPleerFragment2)
     }
 
+    val onChoosedTrackLong: () -> Unit = {
+    }
+
     fun showNothingMessage(){
         binding.messagePlaceHolder.visibility = View.VISIBLE
         binding.message.visibility = View.VISIBLE
@@ -68,10 +71,8 @@ class FavoriteTracksFragment : Fragment() {
     private fun renderState(state: FavoriteTracksState) {
         when (state) {
             is FavoriteTracksState.Content -> {
-
                 hideNothingMessage()
                 showTracks(state.data)
-
             }
             is FavoriteTracksState.Empty -> {
                 hideTracks()
