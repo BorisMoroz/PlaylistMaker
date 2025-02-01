@@ -23,4 +23,9 @@ class FavoriteTracksRepositoryImpl(private val appDatabase: AppDatabase, private
         emit(tracks.map{track -> trackDbConverter.map(track)})
 
     }
+
+    override suspend fun getTracksIds(): Flow<List<Int>> = flow {
+        val tracksIds = appDatabase.favoriteTrackDao().getTracksIds()
+        emit(tracksIds)
+    }
 }

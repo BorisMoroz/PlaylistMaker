@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.practicum.playlistmaker.creator.Creator
+import com.practicum.playlistmaker.favorites.domain.interactor.FavoriteTracksInteractor
 import com.practicum.playlistmaker.search.domain.consumer.Consumer
 import com.practicum.playlistmaker.search.domain.consumer.ConsumerData
 import com.practicum.playlistmaker.search.domain.interactor.SearchHistoryInteractor
@@ -14,12 +15,12 @@ import com.practicum.playlistmaker.search.domain.use_case.SearchTracksUseCase
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 
-class SearchViewModel(val searchTracksUseCase : SearchTracksUseCase, val searchHistoryInteractor : SearchHistoryInteractor) : ViewModel() {
-    private var state = MutableLiveData<SearchTracksState>()
+class SearchViewModel(val searchTracksUseCase : SearchTracksUseCase, val searchHistoryInteractor : SearchHistoryInteractor, val favoriteTracksInteractor: FavoriteTracksInteractor) : ViewModel() {
+    private var state = MutableLiveData<SearchTracksState?>()
 
     private var lastQuery: String = ""
 
-    fun getState(): LiveData<SearchTracksState> = state
+    fun getState(): LiveData<SearchTracksState?> = state
 
     fun resetLastQuery(){
         lastQuery = ""
@@ -50,6 +51,10 @@ class SearchViewModel(val searchTracksUseCase : SearchTracksUseCase, val searchH
         }
     }
 
+    fun resetSearchResults(){
+        state.postValue(null)
+    }
+
     fun getSearchHistoryTracks(): List<Track> {
         var tracks: List<Track> = emptyList()
 
@@ -67,5 +72,28 @@ class SearchViewModel(val searchTracksUseCase : SearchTracksUseCase, val searchH
 
     fun isSearchHistoryEmpty(): Boolean {
         return searchHistoryInteractor.isEmpty()
+    }
+
+    fun updateTracksFavotiteStatus(){
+        val tracksState = state.value
+
+        when(tracksState) {
+            is SearchTracksState.Content -> {
+                var tracks = tracksState.data
+
+                viewModelScope.launch {
+                    favoriteTracksInteractor
+                        .getTracksIds()
+                        .collect { favoriteTracksIds ->
+                            for (track in tracks) {
+                                track.isFavorite = track.trackId in favoriteTracksIds
+                            }
+                            val content = SearchTracksState.Content(tracks)
+                            state.postValue(content)
+                        }
+                }
+            }
+            else -> {}
+        }
     }
 }

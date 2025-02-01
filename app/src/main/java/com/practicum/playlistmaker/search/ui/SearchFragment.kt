@@ -77,12 +77,15 @@ class SearchFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?){
         super.onViewCreated(view, savedInstanceState)
 
+        viewModel.updateTracksFavotiteStatus()
+
         viewModel.getState().observe(viewLifecycleOwner) { state ->
             renderState(state)
         }
 
         val clearButton = binding.clearIcon
         inputEditText = binding.inputEditText
+
         inputEditText.setText(inputValue)
 
         searchHistoryLayOut = binding.searchHistory
@@ -123,6 +126,8 @@ class SearchFragment : Fragment() {
 
             resetLastQuery()
 
+            inputEditText.requestFocus()
+
             inputEditText.setText("")
         }
 
@@ -155,24 +160,28 @@ class SearchFragment : Fragment() {
 
                     updateSearchHistoryTracks(viewModel.getSearchHistoryTracks())
                     showSearchHistory()
-                } else
-                    inputEditText.setShowSoftInputOnFocus(true)
 
-                if(!s!!.isEmpty())
-                    searchDebounceNew()
+                    viewModel.resetSearchResults()
+                } else{
+                    inputEditText.setShowSoftInputOnFocus(true)}
+
+                if(!s!!.isEmpty() && inputEditText.hasFocus()){
+                    searchDebounceNew()}
             }
         }
 
         inputEditText.addTextChangedListener(inputTextWatcher)
 
         inputEditText.setOnFocusChangeListener { view, hasFocus ->
+
             if (hasFocus && (view as EditText).text.isEmpty() && !viewModel.isSearchHistoryEmpty()) {
                 (view as EditText).setShowSoftInputOnFocus(false)
-
                 updateSearchHistoryTracks(viewModel.getSearchHistoryTracks())
                 showSearchHistory()
-            } else
-                (view as EditText).setShowSoftInputOnFocus(true)
+
+                viewModel.resetSearchResults()
+            } else{
+                /*(view as EditText).setShowSoftInputOnFocus(true)*/}
         }
 
         inputEditText.setOnClickListener {
@@ -180,10 +189,12 @@ class SearchFragment : Fragment() {
 
             if (inputEditText.hasFocus() && inputEditText.text.isEmpty() && !viewModel.isSearchHistoryEmpty()) {
                 hideSearchHistory()
-                inputEditText.setShowSoftInputOnFocus(true)
+                //inputEditText.setShowSoftInputOnFocus(true)
                 inputMethod.showSoftInput(inputEditText, InputMethodManager.SHOW_IMPLICIT)
-            } else
-                inputEditText.setShowSoftInputOnFocus(false)
+            }
+            else{
+                //inputEditText.setShowSoftInputOnFocus(true)
+                /*inputEditText.setShowSoftInputOnFocus(false) */}
         }
 
         buttonClearHistory.setOnClickListener {
@@ -196,12 +207,11 @@ class SearchFragment : Fragment() {
 
     val onSearchResultChoosedTrack: () -> Unit = {
         viewModel.addSearchHistoryTrack(choosedTrack)
-
-        findNavController().navigate(R.id.action_searchFragment_to_audiopleerActivity)
+        findNavController().navigate(R.id.action_searchFragment_to_audioPleerFragment2)
     }
 
     val onSearchHistoryChoosedTrack: () -> Unit = {
-        findNavController().navigate(R.id.action_searchFragment_to_audiopleerActivity)
+        findNavController().navigate(R.id.action_searchFragment_to_audioPleerFragment2)
     }
 
     private fun clearButtonVisibility(s: CharSequence?): Boolean {
@@ -285,11 +295,15 @@ class SearchFragment : Fragment() {
         }
     }
 
-    private fun renderState(state: SearchTracksState) {
+    private fun renderState(state: SearchTracksState?) {
         when (state) {
             is SearchTracksState.Error -> showError()
             is SearchTracksState.Content -> showTracks(state.data)
             is SearchTracksState.Loading -> showLoading()
+            else -> {
+                hideSearchResults()
+                tracks.clear()
+            }
         }
     }
 

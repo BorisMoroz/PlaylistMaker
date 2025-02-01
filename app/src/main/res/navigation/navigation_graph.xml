@@ -11,8 +11,8 @@
         android:label="fragment_search"
         tools:layout="@layout/fragment_search">
         <action
-            android:id="@+id/action_searchFragment_to_audiopleerActivity"
-            app:destination="@id/audiopleerActivity" />
+            android:id="@+id/action_searchFragment_to_audioPleerFragment2"
+            app:destination="@id/audioPleerFragment2" />
     </fragment>
     <fragment
         android:id="@+id/mediaFragment"
@@ -20,17 +20,29 @@
         android:label="fragment_media"
         tools:layout="@layout/fragment_media" >
         <action
-            android:id="@+id/action_mediaFragment_to_audiopleerActivity"
-            app:destination="@id/audiopleerActivity" />
+            android:id="@+id/action_mediaFragment_to_createPlaylistFragment"
+            app:destination="@id/createPlaylistFragment" />
+        <action
+            android:id="@+id/action_mediaFragment_to_audioPleerFragment2"
+            app:destination="@id/audioPleerFragment2" />
     </fragment>
     <fragment
         android:id="@+id/settingsFragment"
         android:name="com.practicum.playlistmaker.settings.ui.SettingsFragment"
         android:label="fragment_settings"
         tools:layout="@layout/fragment_settings" />
-    <activity
-        android:id="@+id/audiopleerActivity"
-        android:name="com.practicum.playlistmaker.player.ui.AudiopleerActivity"
-        android:label="activity_audiopleer"
-        tools:layout="@layout/activity_audiopleer" />
+    <fragment
+        android:id="@+id/createPlaylistFragment"
+        android:name="com.practicum.playlistmaker.playlists.ui.CreatePlaylistFragment"
+        android:label="fragment_create_playlitst"
+        tools:layout="@layout/fragment_create_playlitst" />
+    <fragment
+        android:id="@+id/audioPleerFragment2"
+        android:name="com.practicum.playlistmaker.player.ui.AudioPleerFragment"
+        android:label="fragment_audiopleer"
+        tools:layout="@layout/fragment_audiopleer" >
+        <action
+            android:id="@+id/action_audioPleerFragment2_to_createPlaylistFragment"
+            app:destination="@id/createPlaylistFragment" />
+    </fragment>
 </navigation>

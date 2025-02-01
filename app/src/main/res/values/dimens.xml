@@ -53,4 +53,22 @@
     <dimen name="small_buttons_width">51dp</dimen>
     <dimen name="small_buttons_height">51dp</dimen>
     <dimen name="cover_image_radius">8dp</dimen>
+
+    <!-- dimens for fragment_create_playlist -->
+
+    <dimen name="playlist_cover_image_radius">8dp</dimen>
+
+    <!-- dimens for playlist_view -->
+
+    <dimen name="playlistview_width">160dp</dimen>
+    <dimen name="playlistview_height">196dp</dimen>
+
+    <dimen name="playlistview_image_width">160dp</dimen>
+    <dimen name="playlistview_image_height">160dp</dimen>
+
+    <dimen name="playlistview_line_width">160dp</dimen>
+    <dimen name="playlistview_line_height">16dp</dimen>
+    <dimen name="playlistview_line_text_size">12sp</dimen>
+
+    <dimen name="playlist_item_image_radius">8dp</dimen>
 </resources>
