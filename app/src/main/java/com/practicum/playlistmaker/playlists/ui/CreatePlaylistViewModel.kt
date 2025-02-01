@@ -1,5 +1,6 @@
 package com.practicum.playlistmaker.playlists.ui
 
+import android.net.Uri
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -10,38 +11,31 @@ import com.practicum.playlistmaker.playlists.domain.interactor.PlaylistsInteract
 import com.practicum.playlistmaker.playlists.domain.models.Playlist
 import kotlinx.coroutines.launch
 
-class CreatePlaylistViewModel(val playlistsInteractor: PlaylistsInteractor) : ViewModel() {
-    fun addPlaylist(playlist: Playlist){
-        viewModelScope.launch{
+open class CreatePlaylistViewModel(val playlistsInteractor: PlaylistsInteractor) : ViewModel() {
+    private val playlistImageAbsolutePath = MutableLiveData<String>()
+    fun getplaylistImageAbsolutePath(): LiveData<String> = playlistImageAbsolutePath
+
+    fun addPlaylist(playlist: Playlist) {
+        viewModelScope.launch {
             playlistsInteractor.addPlaylist(playlist)
         }
     }
 
-    fun updatePlaylist(playlist: Playlist){
-        viewModelScope.launch{
+    fun updatePlaylist(playlist: Playlist) {
+        viewModelScope.launch {
             playlistsInteractor.updatePlaylist(playlist)
         }
     }
-}
+    fun saveImageToPrivateStorage(uri: Uri?) {
+        var fullFileName = ""
 
-class FavoriteTracksViewModel(val favoriteTracksInteractor: FavoriteTracksInteractor) : ViewModel() {
-    private val state = MutableLiveData<FavoriteTracksState>()
-
-    fun getState(): LiveData<FavoriteTracksState> = state
-
-    fun getFavoriteTracks(){
-        viewModelScope.launch{
-            favoriteTracksInteractor
-                .getTracks()
-                .collect{ result ->
-                    if(!result.isEmpty()) {
-                        val content = FavoriteTracksState.Content(result)
-                        state.postValue(content)
-                    }
-                    else{
-                        state.postValue(FavoriteTracksState.Empty)
-                    }
-                }
+        viewModelScope.launch {
+            if (uri != null) {
+                fullFileName = playlistsInteractor.saveImageToPrivateStorage(uri)
+                playlistImageAbsolutePath.postValue(fullFileName)
+            } else {
+                playlistImageAbsolutePath.postValue("")
+            }
         }
     }
 }

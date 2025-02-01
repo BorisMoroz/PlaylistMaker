@@ -1,13 +1,7 @@
 package com.practicum.playlistmaker.playlists.ui
 
-import android.annotation.SuppressLint
-import android.content.Context
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Bundle
-import android.os.Environment
-import android.provider.OpenableColumns
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.LayoutInflater
@@ -29,24 +23,21 @@ import com.practicum.playlistmaker.R
 import com.practicum.playlistmaker.databinding.FragmentCreatePlaylitstBinding
 import com.practicum.playlistmaker.playlists.domain.models.Playlist
 import org.koin.androidx.viewmodel.ext.android.viewModel
-import java.io.File
-import java.io.FileOutputStream
 
-class CreatePlaylistFragment : Fragment() {
-    private val viewModel by viewModel<CreatePlaylistViewModel>()
+open class CreatePlaylistFragment : Fragment() {
+    open val viewModel by viewModel<CreatePlaylistViewModel>()
 
-    private lateinit var binding: FragmentCreatePlaylitstBinding
+    lateinit var binding: FragmentCreatePlaylitstBinding
 
-    private var playlistImageUri: Uri? = null
+    var playlistImageUri: Uri? = null
 
     lateinit var backPressedDialog: MaterialAlertDialogBuilder
 
-    private val backPressedCallback = object : OnBackPressedCallback(true) {
+    val backPressedCallback = object : OnBackPressedCallback(true) {
         override fun handleOnBackPressed() {
-            if(isFullContentNotEmpty()){
+            if (isFullContentNotEmpty()) {
                 backPressedDialog.show()
-            }
-            else{
+            } else {
                 isEnabled = false
                 requireActivity().onBackPressedDispatcher.onBackPressed()
                 isEnabled = true
@@ -63,35 +54,18 @@ class CreatePlaylistFragment : Fragment() {
         return binding.root
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?){
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        binding.backArrow.setOnClickListener{
-            requireActivity().onBackPressedDispatcher.onBackPressed()
+        viewModel.getplaylistImageAbsolutePath().observe(viewLifecycleOwner) { state ->
+            rendersaveImageToPrivateStorage(state)
         }
 
+        binding.backArrow.setOnClickListener {
+            requireActivity().onBackPressedDispatcher.onBackPressed()
+        }
         binding.buttonCreatePlaylist.setOnClickListener {
-            var playlistImageAbsolutePath = ""
-
-            if(playlistImageUri != null)
-                playlistImageAbsolutePath = saveImageToPrivateStorage(playlistImageUri!!)
-
-            val playlist = Playlist(0,
-                binding.playlistNameEditText.getText().toString(),
-                binding.playlistDescriptionEditText.getText().toString(),
-                playlistImageAbsolutePath,
-                mutableListOf(), 0)
-
-            viewModel.addPlaylist(playlist)
-
-            findNavController().navigateUp()
-
-            val toast_view = layoutInflater.inflate(R.layout.custom_toast, null)
-            val toast_message = toast_view.findViewById<TextView>(R.id.text)
-            toast_message.text = "${getString(R.string.create_playlist_toast_phrase_first_part)} [${binding.playlistNameEditText.text}] ${getString(R.string.create_playlist_toast_phrase_second_part)}"
-            val toast = Toast.makeText(requireActivity(), "", Toast.LENGTH_SHORT)
-            toast.view = toast_view
-            toast.show()
+            viewModel.saveImageToPrivateStorage(playlistImageUri)
         }
 
         val inputNameTextWatcher = object : TextWatcher {
@@ -102,10 +76,9 @@ class CreatePlaylistFragment : Fragment() {
             }
 
             override fun afterTextChanged(s: Editable?) {
-                if(s!!.isEmpty()){
+                if (s!!.isEmpty()) {
                     binding.buttonCreatePlaylist.isEnabled = false
-                }
-                else{
+                } else {
                     binding.buttonCreatePlaylist.isEnabled = true
                 }
             }
@@ -113,81 +86,75 @@ class CreatePlaylistFragment : Fragment() {
 
         binding.playlistNameEditText.addTextChangedListener(inputNameTextWatcher)
 
-        val pickMedia = registerForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
+        val pickMedia =
+            registerForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
                 playlistImageUri = uri
 
                 if (playlistImageUri != null) {
 
-                val radiusInPixels = getResources().getDimensionPixelSize(R.dimen.playlist_cover_image_radius)
+                    val radiusInPixels =
+                        getResources().getDimensionPixelSize(R.dimen.playlist_cover_image_radius)
 
-                Glide.with(this)
-                    .load(uri)
-                    .diskCacheStrategy(DiskCacheStrategy.NONE)
-                    .skipMemoryCache(true)
-                    .transform(
-                        CenterCrop(),
-                        RoundedCorners(radiusInPixels),
-                    )
-                    .into(binding.playlistImage)
-            } else {
+                    Glide.with(this)
+                        .load(uri)
+                        .diskCacheStrategy(DiskCacheStrategy.NONE)
+                        .skipMemoryCache(true)
+                        .transform(
+                            CenterCrop(),
+                            RoundedCorners(radiusInPixels),
+                        )
+                        .into(binding.playlistImage)
+                } else {
 
+                }
             }
-        }
 
-        binding.playlistImage.setOnClickListener{
+        binding.playlistImage.setOnClickListener {
             pickMedia.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
         }
 
-        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, backPressedCallback)
-
+        requireActivity().onBackPressedDispatcher.addCallback(
+            viewLifecycleOwner,
+            backPressedCallback
+        )
         createBackPressedDialog()
     }
 
-    private fun isFullContentNotEmpty() : Boolean{
+    private fun isFullContentNotEmpty(): Boolean {
         return binding.playlistImage.getDrawable() != null || binding.playlistNameEditText.text.isNotEmpty() || binding.playlistDescriptionEditText.text.isNotEmpty()
     }
 
-    private fun createBackPressedDialog(){
-        backPressedDialog = MaterialAlertDialogBuilder(requireActivity())
-            .setTitle(getString(R.string.create_playlist_backpressed_dialog_title))
-            .setMessage(getString(R.string.create_playlist_backpressed_dialog_message))
-            .setNeutralButton(getString(R.string.create_playlist_backpressed_dialog_cancel_button)) { dialog, which ->
-
-            }.setPositiveButton(getString(R.string.create_playlist_backpressed_dialog_yes_button)) { dialog, which ->
-                findNavController().navigateUp()
-
-            }
-
-
+    private fun createBackPressedDialog() {
+        backPressedDialog =
+            MaterialAlertDialogBuilder(requireActivity())
+                .setTitle(getString(R.string.create_playlist_backpressed_dialog_title))
+                .setMessage(getString(R.string.create_playlist_backpressed_dialog_message))
+                .setNeutralButton(getString(R.string.create_playlist_backpressed_dialog_cancel_button)) { dialog, which ->
+                }
+                .setPositiveButton(getString(R.string.create_playlist_backpressed_dialog_yes_button)) { dialog, which ->
+                    findNavController().navigateUp()
+                }
     }
 
-    @SuppressLint("Range")
-    fun getFileNameFromUri(context: Context, uri: Uri): String? {
-        val fileName: String?
-        val cursor = context.contentResolver.query(uri, null, null, null, null)
-        cursor?.moveToFirst()
-        fileName = cursor?.getString(cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME))
-        cursor?.close()
-        return fileName
-    }
+    open fun rendersaveImageToPrivateStorage(state: String) {
+        val playlist = Playlist(
+            0,
+            binding.playlistNameEditText.getText().toString(),
+            binding.playlistDescriptionEditText.getText().toString(),
+            state,
+            mutableListOf(), 0
+        )
 
-    private fun saveImageToPrivateStorage(uri: Uri) : String{
-        //создаём экземпляр класса File, который указывает на нужный каталог
-        val filePath = File(requireActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES), "playlistsimages")
-        //создаем каталог, если он не создан
-        if (!filePath.exists()){
-            filePath.mkdirs()
-        }
+        viewModel.addPlaylist(playlist)
 
-        val fileName = getFileNameFromUri(requireActivity(),uri)
+        findNavController().navigateUp()
 
-        val file = File(filePath, fileName)
-        val inputStream = requireActivity().contentResolver.openInputStream(uri)
-        val outputStream = FileOutputStream(file)
-        BitmapFactory
-            .decodeStream(inputStream)
-            .compress(Bitmap.CompressFormat.JPEG, 30, outputStream)
-
-        return file.getAbsolutePath()
+        val toast_view = layoutInflater.inflate(R.layout.custom_toast, null)
+        val toast_message = toast_view.findViewById<TextView>(R.id.text)
+        toast_message.text =
+            "${getString(R.string.create_playlist_toast_phrase_first_part)} [${binding.playlistNameEditText.text}] ${getString(R.string.create_playlist_toast_phrase_second_part)}"
+        val toast = Toast.makeText(requireActivity(), "", Toast.LENGTH_SHORT)
+        toast.view = toast_view
+        toast.show()
     }
 }
