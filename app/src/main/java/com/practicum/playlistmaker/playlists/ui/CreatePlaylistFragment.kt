@@ -126,7 +126,7 @@ open class CreatePlaylistFragment : Fragment() {
 
     private fun createBackPressedDialog() {
         backPressedDialog =
-            MaterialAlertDialogBuilder(requireActivity())
+            MaterialAlertDialogBuilder(requireActivity(), R.style.MyAlertDialogTheme)
                 .setTitle(getString(R.string.create_playlist_backpressed_dialog_title))
                 .setMessage(getString(R.string.create_playlist_backpressed_dialog_message))
                 .setNeutralButton(getString(R.string.create_playlist_backpressed_dialog_cancel_button)) { dialog, which ->
