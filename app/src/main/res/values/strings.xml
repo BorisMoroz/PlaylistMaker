@@ -107,4 +107,48 @@
     <string name="playlist_tracks_number_root">трек</string>
     <string name="playlist_tracks_number_ending_1">а</string>
     <string name="playlist_tracks_number_ending_2">ов</string>
+
+    <!-- strings for fragment_view_playlist -->
+
+    <string name="playlist_duration_check_value">300 минут • 98 треков</string>
+    <string name="playlist_descripion_check_value">2022</string>
+    <string name="playlist_name_check_value">Best songs 2021</string>
+
+    <plurals name="plurals_for_minutes">
+        <item quantity="zero">%1$d минут</item>
+        <item quantity="one">%1$d минута</item>
+        <item quantity="two">%1$d минуты</item>
+        <item quantity="few">%1$d минуты</item>
+        <item quantity="many">%1$d минут</item>
+        <item quantity="other">%1$d минут</item>
+    </plurals>
+
+    <plurals name="plurals_for_tracks">
+        <item quantity="zero">%1$d треков</item>
+        <item quantity="one">%1$d трек</item>
+        <item quantity="two">%1$d трека</item>
+        <item quantity="few">%1$d трека</item>
+        <item quantity="many">%1$d треков</item>
+        <item quantity="other">%1$d треков</item>
+    </plurals>
+
+    <string name="share_menu_item">Поделиться</string>
+    <string name="remove_menu_item">Удалить плейлист</string>
+    <string name="edit_menu_item">Редактировать информацию</string>
+
+    <string name="share_menu_toast_phrase">В этом плейлисте нет списка треков, которым можно поделиться</string>
+
+    <string name="delete_track_dialog_message">Хотите удалить трек?</string>
+    <string name="delete_playlist_dialog_message">Хотите удалить плейлист</string>
+
+    <string name="dialog_positive_button">ДА</string>
+    <string name="dialog_negative_button">НЕТ</string>
+    <string name="dialog_neutral_button">ОТМЕНА</string>
+
+    <string name="no_tracks_message">В этом плейлисте нет треков</string>
+
+    <!-- strings for fragment_edit_playlist -->
+
+    <string name="edit_playlist_title">Редактировать</string>
+    <string name="edit_playlist_button">Сохранить</string>
 </resources>

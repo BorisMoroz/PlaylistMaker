@@ -97,7 +97,7 @@ class SearchFragment : Fragment() {
         recyclerViewSearchResult.layoutManager =
             LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
 
-        trackAdapter = TrackAdapter(tracks, onSearchResultChoosedTrack, viewLifecycleOwner.lifecycleScope)
+        trackAdapter = TrackAdapter(tracks, onSearchResultChoosedTrack, onChoosedTrackLong, viewLifecycleOwner.lifecycleScope)
         recyclerViewSearchResult.adapter = trackAdapter
 
         recyclerViewSearchHistory = binding.searchHistoryList
@@ -105,7 +105,7 @@ class SearchFragment : Fragment() {
             LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
 
         trackAdapterSearchHistory =
-            TrackAdapter(searchHistoryTracks, onSearchHistoryChoosedTrack, viewLifecycleOwner.lifecycleScope)
+            TrackAdapter(searchHistoryTracks, onSearchHistoryChoosedTrack, onChoosedTrackLong, viewLifecycleOwner.lifecycleScope)
 
         recyclerViewSearchHistory.adapter = trackAdapterSearchHistory
 
@@ -181,7 +181,7 @@ class SearchFragment : Fragment() {
 
                 viewModel.resetSearchResults()
             } else{
-                /*(view as EditText).setShowSoftInputOnFocus(true)*/}
+                }
         }
 
         inputEditText.setOnClickListener {
@@ -189,12 +189,10 @@ class SearchFragment : Fragment() {
 
             if (inputEditText.hasFocus() && inputEditText.text.isEmpty() && !viewModel.isSearchHistoryEmpty()) {
                 hideSearchHistory()
-                //inputEditText.setShowSoftInputOnFocus(true)
                 inputMethod.showSoftInput(inputEditText, InputMethodManager.SHOW_IMPLICIT)
             }
             else{
-                //inputEditText.setShowSoftInputOnFocus(true)
-                /*inputEditText.setShowSoftInputOnFocus(false) */}
+                }
         }
 
         buttonClearHistory.setOnClickListener {
@@ -212,6 +210,9 @@ class SearchFragment : Fragment() {
 
     val onSearchHistoryChoosedTrack: () -> Unit = {
         findNavController().navigate(R.id.action_searchFragment_to_audioPleerFragment2)
+    }
+
+    val onChoosedTrackLong: () -> Unit = {
     }
 
     private fun clearButtonVisibility(s: CharSequence?): Boolean {

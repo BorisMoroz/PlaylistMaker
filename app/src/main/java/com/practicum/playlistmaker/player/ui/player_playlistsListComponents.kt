@@ -14,7 +14,7 @@ import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.practicum.playlistmaker.R
 import com.practicum.playlistmaker.playlists.domain.models.Playlist
 
-lateinit var choosedPlaylist : Playlist
+var choosedPlaylist : Playlist? = null
 
 class playerPlaylistViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
     private val playlistName: TextView = itemView.findViewById(R.id.playlistName)

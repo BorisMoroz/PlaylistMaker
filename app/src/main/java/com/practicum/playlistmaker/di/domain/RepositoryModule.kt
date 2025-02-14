@@ -43,6 +43,6 @@ val repositoryModule = module {
     }
 
     single<PlaylistsRepository> {
-        PlayListsRepositoryImpl(get(), get(), get())
+        PlayListsRepositoryImpl(get(), get(), get(), androidContext())
     }
 }

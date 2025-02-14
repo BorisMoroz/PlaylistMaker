@@ -16,4 +16,8 @@ class SharingInteractorImpl(val externalNavigator: ExternalNavigator) : SharingI
     override fun openSupport(emailData: EmailData) {
         externalNavigator.openEmail(emailData)
     }
+
+    override fun sharePlaylist(message: String){
+        externalNavigator.sharePlaylist(message)
+    }
 }

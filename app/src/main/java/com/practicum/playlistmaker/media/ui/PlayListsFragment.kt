@@ -12,7 +12,9 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.ItemDecoration
 import com.practicum.playlistmaker.R
 import com.practicum.playlistmaker.databinding.FragmentPlayListsBinding
+import com.practicum.playlistmaker.player.ui.choosedPlaylist
 import com.practicum.playlistmaker.playlists.domain.models.Playlist
+import com.practicum.playlistmaker.search.ui.choosedTrack
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class PlayListsFragment : Fragment() {
@@ -36,7 +38,7 @@ class PlayListsFragment : Fragment() {
         recyclerViewPlaylists = binding.playlistsList
         recyclerViewPlaylists.layoutManager =  GridLayoutManager(requireContext(), 2)
 
-        playlistAdapter = PlaylistAdapter(playlists)
+        playlistAdapter = PlaylistAdapter(playlists, onChoosedPlaylist)
         recyclerViewPlaylists.adapter = playlistAdapter
 
         binding.buttonNewPlaylist.setOnClickListener {
@@ -51,8 +53,12 @@ class PlayListsFragment : Fragment() {
         super.onResume()
 
         viewModel.getPlaylists()
-
     }
+
+    val onChoosedPlaylist: () -> Unit = {
+        findNavController().navigate(R.id.action_mediaFragment_to_viewPlaylistFragment)
+    }
+
     fun showNothingMessage(){
         binding.messagePlaceHolder.visibility = View.VISIBLE
         binding.message.visibility = View.VISIBLE
@@ -77,10 +83,8 @@ class PlayListsFragment : Fragment() {
     private fun renderState(state: PlaylistsState) {
         when (state) {
             is PlaylistsState.Content -> {
-
                 hideNothingMessage()
                 showPlaylists(state.data)
-
             }
             is PlaylistsState.Empty -> {
                 hidePlaylists()
